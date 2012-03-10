@@ -1,0 +1,22 @@
+10.03.2012 21:39:00
+  - first dev branch on github.
+  - PHP version >= 5.2 required
+  - GAW & Common Library stay unchanged, full functional. 
+  - Main development is in Yandex.Direct direction. Minimum functionality:
+    - Main classes released:
+        - Lib/YDirectUser
+        - Lib/YDirectSoapClient
+        - Lib/YDirectSoapClientFactory
+        - Util/YDirectReportUtils
+  - path to own auth.ini & settings.ini sets as:
+    define('_APIADLIB_AUTHINI_PATHTO', 't:/home/local/ams/ini/');
+  - yandex auth ini sends as param to YDirectUser class constructor
+  - sandbox for Yandex.Direct - ok.
+  - SOAP+OAUTH - ok.
+  
+  TODO:
+  - Append work samples
+  - Common functionality with advertises & ad campaigns
+  
+ 
+  
