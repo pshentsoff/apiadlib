@@ -1,4 +1,10 @@
-10.03.2012 21:39:00
+version 0.1.1-dev from 28.03.2012
+  - added work samples:
+    - yd-lib-soap-check1.php
+    - yd-lib-auto-soap-check1.php
+  - spl_autoload class added: class APIAdLibAutoload (apiadlib.autoload.php)
+
+version 0.1-dev
   - first dev branch on github.
   - PHP version >= 5.2 required
   - GAW & Common Library stay unchanged, full functional. 
@@ -8,15 +14,11 @@
         - Lib/YDirectSoapClient
         - Lib/YDirectSoapClientFactory
         - Util/YDirectReportUtils
-  - path to own auth.ini & settings.ini sets as:
-    define('_APIADLIB_AUTHINI_PATHTO', 't:/home/local/ams/ini/');
-  - yandex auth ini sends as param to YDirectUser class constructor
-  - sandbox for Yandex.Direct - ok.
-  - SOAP+OAUTH - ok.
+  - path to yandex.direct auth.ini sends as param to YDirectUser class constructor
+  - support of sandbox for Yandex.Direct version v4 (version live not tested)
+  - support of SOAP+OAUTH Yandex.Direct version v4 (version live not tested)
   
-  TODO:
-  - Append work samples
-  - Common functionality with advertises & ad campaigns
+
   
  
   

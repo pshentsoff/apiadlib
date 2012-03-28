@@ -298,7 +298,7 @@ class YDirectUser extends AdsUser {
       throw new ValidationException('oauthInfo', NULL,
           'application_id is required and cannot be NULL.');
     }
-    //TODO: test todo
+    
   }
 
   /**

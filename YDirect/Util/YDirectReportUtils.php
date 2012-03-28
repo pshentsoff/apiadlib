@@ -66,7 +66,8 @@ class YDirectReportUtils {
    * The YDirectReportUtils class is not meant to have any instances.
    * @access private
    */
-  private function __construct() {}
+  private function __construct() {
+    }
   
  }
  
