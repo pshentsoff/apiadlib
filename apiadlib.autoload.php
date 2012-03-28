@@ -27,17 +27,24 @@ class APIAdLibAutoload {
    *     
    */ 
    
-  //TODO: Describe Utils classes autoload
-  public static $APIADLIB_LIBRARIES = array(
-    'AdWords' => array(
-      'path' => 'AdWords/Lib/',
-      ),
-    'Ads'     => array(
-      'path' => 'Common/Lib/',
-      ),
-    'YDirect' => array(
-      'path' => 'YDirect/Lib/',
-      ),
+  private static $APIADLIB_PATHS = array(
+
+    // Common classes paths
+    'Common/Lib/',
+    'Common/Util/',
+    
+    // Google AdWords paths
+    'AdWords/Lib/',
+    'AdWords/Util/',
+    'AdWords/v200909/',
+    'AdWords/v201003/',
+    'AdWords/v201008/',
+    'AdWords/v201101/',
+    'AdWords/v201109/',
+    
+    // Yandex.Direct paths
+    'YDirect/Lib/',
+    'YDirect/Util/',
     );
   
   // Saves last loaded filename for future logging purposes  
@@ -46,14 +53,15 @@ class APIAdLibAutoload {
   /**
    * Library classes autoload function for SPL autoload functions stack
    */  
-  //TODO: Catch Utils classes for autoload
   public static function LoadClass($class_name) {
   
-    foreach(self::$APIADLIB_LIBRARIES as $lib_name => $lib_settings) {
-    
-      if(!preg_match("/$lib_name/i", $class_name)) continue;
+
+    foreach(self::$APIADLIB_PATHS as $key => $class_path) {
+      $class_filepath = dirname(__FILE__).'/'.$class_path.$class_name.'.php';
+      if(!file_exists($class_filepath)) continue;
       
-      self::$_lastLoadedFilename = $lib_settings['path'].$class_name.'.php';
+      self::$_lastLoadedFilename = $class_filepath;
+       
       require_once(self::$_lastLoadedFilename);
       break;
       

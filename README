@@ -1,3 +1,10 @@
+version 0.1.2-dev from 28.03.2012
+  - changed APIAdLibAutoload class - now it simply scans all 'known' for classes
+    directories, not only 'Lib' paths: easy way to load any class in library.
+  - added apiadlib.info file for using library in Drupal as external library (now
+    not only as AMS branch, and this file only as start)
+  - all AMS branches removed due to restructurization 
+  
 version 0.1.1-dev from 28.03.2012
   - added work samples:
     - yd-lib-soap-check1.php
