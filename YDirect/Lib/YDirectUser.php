@@ -38,35 +38,35 @@ require_once 'YDirectSoapClientFactory.php';
  * User class for the Yandex.Direct API to create SOAP clients to the available API
  * services.
  * @package APIAdLib
- * @subpackage Lib
+ * @subpackage YDirect/Lib
  */
 class YDirectUser extends AdsUser {
 
-  private static $LIB_VERSION = '0.0.3';
-  private static $LIB_NAME = 'APIAdLib';
+  protected static $LIB_VERSION = '0.2.0-dev';
+  protected static $LIB_NAME = 'APIAdLib';
 
   /**
    * The default version that is loaded if the settings INI cannot be loaded.
    * @var string default version of the Yandex.Direct API
    */
-  private static $DEFAULT_VERSION = 'v4';
+  protected static $DEFAULT_VERSION = 'v4';
 
   /**
    * The default server that is loaded if the settings INI cannot be loaded.
    * @var string default server of the Yandex.Direct API
    */
-  private static $DEFAULT_SERVER = 'https://soap.direct.yandex.ru/v4/soap/';
+  protected static $DEFAULT_SERVER = 'https://soap.direct.yandex.ru/v4/soap/';
   
   /**
    * The default locale for messages that used if settings INI can't be loaded
    * @var string default locale
    */
-  private static $DEFAULT_LOCALE = 'ru';
+  protected static $DEFAULT_LOCALE = 'ru';
 
-  private $login;
-  private $email;
+  protected $login;
+  protected $email;
   
-  private $locale;
+  protected $locale;
   
   /**
    * The YDirectUser constructor.
@@ -203,55 +203,6 @@ class YDirectUser extends AdsUser {
     Logger::SetLogLevel(YDirectReportUtils::$LOG_NAME, Logger::$INFO);
   }
     
-  /**
-   * Gets the service by its service name and group.
-   * @param $serviceName the service name
-   * @param string $version the version of the service to get. If
-   *     <var>NULL</var>, then the default version will be used
-   * @param string $server the server to make the request to. If
-   *     <var>NULL</var>, then the default server will be used
-   * @param SoapClientFactory $serviceFactory the factory to create the client.
-   *     If <var>NULL</var>, then the built-in SOAP client factory will be used
-   * @param bool $validateOnly if the service should be created in validateOnly
-   *     mode
-   * @param bool $partialFailure if the service should be created in
-   *     partialFailure mode
-   * @return SoapClient the instantiated service
-   */
-  public function GetService($serviceName, $version = NULL, $server = NULL,
-      SoapClientFactory $serviceFactory = NULL, $validateOnly = NULL,
-      $partialFailure = NULL) {
-    $this->ValidateUser();
-    if (!isset($serviceFactory)) {
-      if (!isset($version)) {
-        $version = $this->GetDefaultVersion();
-      }
-
-      if (!isset($server)) {
-        $server = $this->GetDefaultServer();
-      }
-
-      $serviceFactory = new YDirectSoapClientFactory($this, $version, $server,
-          $validateOnly, $partialFailure);
-    }
-
-    return parent::GetServiceSoapClient($serviceName, $serviceFactory);
-  }
-  
-  /**
-   * Loads the classes within a service, so they can be used before the service
-   * is constructed.
-   * @param $serviceName the service name
-   * @param string $version the version of the service to get. If
-   *     <var>NULL</var>, then the default version will be used
-   */
-  public function LoadService($serviceName, $version = NULL) {
-    if (!isset($version)) {
-      $version = $this->GetDefaultVersion();
-    }
-    $serviceFactory = new YDirectSoapClientFactory($this, $version, NULL, NULL, NULL);
-    $serviceFactory->DoRequireOnce($serviceName);
-  }
 
   /**
    * Gets the email address of the user login.
@@ -334,6 +285,55 @@ class YDirectUser extends AdsUser {
    }
    
   /**
+   * Gets the service by its service name and group.
+   * @param $serviceName the service name
+   * @param string $version the version of the service to get. If
+   *     <var>NULL</var>, then the default version will be used
+   * @param string $server the server to make the request to. If
+   *     <var>NULL</var>, then the default server will be used
+   * @param SoapClientFactory $serviceFactory the factory to create the client.
+   *     If <var>NULL</var>, then the built-in SOAP client factory will be used
+   * @param bool $validateOnly if the service should be created in validateOnly
+   *     mode
+   * @param bool $partialFailure if the service should be created in
+   *     partialFailure mode
+   * @return SoapClient the instantiated service
+   */
+  public function GetService($serviceName, $version = NULL, $server = NULL,
+      SoapClientFactory $serviceFactory = NULL, $validateOnly = NULL,
+      $partialFailure = NULL) {
+    $this->ValidateUser();
+    if (!isset($serviceFactory)) {
+      if (!isset($version)) {
+        $version = $this->GetDefaultVersion();
+      }
+
+      if (!isset($server)) {
+        $server = $this->GetDefaultServer();
+      }
+
+      $serviceFactory = new YDirectSoapClientFactory($this, $version, $server,
+          $validateOnly, $partialFailure);
+    }
+
+    return parent::GetServiceSoapClient($serviceName, $serviceFactory);
+  }
+  
+  /**
+   * Loads the classes within a service, so they can be used before the service
+   * is constructed.
+   * @param $serviceName the service name
+   * @param string $version the version of the service to get. If
+   *     <var>NULL</var>, then the default version will be used
+   */
+  public function LoadService($serviceName, $version = NULL) {
+    if (!isset($version)) {
+      $version = $this->GetDefaultVersion();
+    }
+    $serviceFactory = new YDirectSoapClientFactory($this, $version, NULL, NULL, NULL);
+    $serviceFactory->DoRequireOnce($serviceName);
+  }
+  /**
    * Handles calls to undefined methods.
    * @param string $name the name of the method being called
    * @param array $arguments the arguments passed to the method
@@ -341,12 +341,8 @@ class YDirectUser extends AdsUser {
    *     is no correct method
    */
   public function __call($name, $arguments) {
-    // Handle calls to legacy Get*Service() methods.
-    if (preg_match('/^Get(\w+Service)$/i', $name, $matches)) {
-      $serviceName = $matches[1];
-      array_unshift($arguments, $serviceName);
-      return call_user_func_array(array($this, 'GetService'), $arguments);
-    }
+    array_unshift($arguments, $name);
+    return call_user_func_array(array($this, 'GetService'), $arguments);
   }
 
 }

@@ -1,7 +1,8 @@
 <?php
 
 /**
-  * APIAdLib Autoload
+  * APIAdLib 
+  *   Autoload
   * Class for register and autoload library classes with spl_autoload...
   * 
   * PHP Version 5.2    
@@ -29,6 +30,18 @@ class APIAdLibAutoload {
    
   private static $APIADLIB_PATHS = array(
 
+    //APIAdLib Extensions for Yandex Direct API Library (same as for GAW)
+    'YDirectExt/Lib/',
+    'YDirectExt/Util/',
+
+    // APIAdLib Extensions for Google AdWords API Library
+    'AdWordsExt/Lib/',
+    'AdWordsExt/Util/',
+    
+    // Yandex.Direct paths
+    'YDirect/Lib/',
+    'YDirect/Util/',
+    
     // Common classes paths
     'Common/Lib/',
     'Common/Util/',
@@ -42,9 +55,6 @@ class APIAdLibAutoload {
     'AdWords/v201101/',
     'AdWords/v201109/',
     
-    // Yandex.Direct paths
-    'YDirect/Lib/',
-    'YDirect/Util/',
     );
   
   // Saves last loaded filename for future logging purposes  

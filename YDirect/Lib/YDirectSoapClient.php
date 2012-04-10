@@ -37,12 +37,12 @@ require_once dirname(__FILE__) . '/../../Common/Lib/AdsSoapClient.php';
  */
 class YDirectSoapClient extends AdsSoapClient {
 
-  private static $DEFAULT_TRACE = 0;
-  private static $DEFAULT_EXCEPTIONS = 0;
-  private static $DEFAULT_ENCODING = "UTF-8";
-  private static $DEFAULT_SOAP_VERSION = SOAP_1_1;
-  private static $DEFAULT_URI = 'API';
-  private static $DEFAULT_LOCALE = 'ru';
+  protected static $DEFAULT_TRACE = 0;
+  protected static $DEFAULT_EXCEPTIONS = 0;
+  protected static $DEFAULT_ENCODING = "UTF-8";
+  protected static $DEFAULT_SOAP_VERSION = SOAP_1_1;
+  protected static $DEFAULT_URI = 'API';
+  protected static $DEFAULT_LOCALE = 'ru';
 
   /**
    * Constructor for the Yandex.Direct API SOAP client.
@@ -75,16 +75,17 @@ class YDirectSoapClient extends AdsSoapClient {
   /**
    *
    */
-  private function CheckOptions($wsdl, &$options, $user) {
+  protected function CheckOptions($wsdl, &$options, $user) {
     if(!$wsdl) {
       // keys 'location' and 'uri' must be set in non-WSDL mode
       if(!array_key_exists('location', $options)) {
         if(isset($user)&&$user->GetDefaultServer()) {
           $options['location'] = $user->GetDefaultServer();
           } else {
-          // TODO (pshentsoff): exceptions or other variants to get request location
+          throw new Exception("Location must be specified at non-WSDL SOAP. Pass it as 'location' keyed value at options array or as default server at passed user class.");
           }
         }
+      //TODO: check this 'uri' role for requests
       if(!array_key_exists('uri', $options)) {
         $options['uri'] = YDirectSoapClient::$DEFAULT_URI;
         }

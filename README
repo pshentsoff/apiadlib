@@ -1,3 +1,18 @@
+version 0.2.0-dev from 10.04.2012
+  - <Lib>Ext library extensions added. Recommends to use more flexible and usable
+    'Ext' extensions of library classes. <Lib>Ext extensions oriented to work with
+    XML data exchange with ads services.
+  - <Lib>UserExt extends <Lib>User classes:
+    - authentication data and settings now can be passed as XML file or XML data.
+    - they can be passed as parametred arrays too.
+    - previous variant with INI file also acceptable.
+  - <Lib>Exception extends Exception. <Lib>Ext now throwing exceptions if errors
+    occurs.
+  - Added common library static constants include file apiadlib.constants.inc
+  - Some constant parameters moved to constants include file apiadlib.constants.inc
+  - Added some usefull functions to new library file apiadlib.functions.inc
+  - Changed some scopes at YDirect classes
+   
 version 0.1.2-dev from 28.03.2012
   - changed APIAdLibAutoload class - now it simply scans all 'known' for classes
     directories, not only 'Lib' paths: easy way to load any class in library.

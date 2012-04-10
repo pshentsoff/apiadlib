@@ -26,7 +26,7 @@
  *
  */
   
-error_reporting(E_STRICT | E_ALL);
+error_reporting(E_ALL & ~E_STRICT);
 
 define('_APIADLIB_PATHTO', '/..'); // path to apiadlib dir
 define('_APIADLIB_AUTHINI_PATHTO', '../../../ini/'); // path to ini files

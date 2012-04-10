@@ -60,10 +60,37 @@ class YDirectSoapClientFactory extends SoapClientFactory {
    * @param string $serviceName the service to instantiate
    */
   public function DoRequireOnce($serviceName) {
-    require_once implode("/", array(dirname(__FILE__), '..',
-        $this->GetVersion(), $serviceName . '.php'));
+    $service = implode("/", array(dirname(__FILE__), $serviceName . '.php'));
+    if(file_exists($service)) {
+      require_once $service;
+      return TRUE;
+      } else {
+      return FALSE;
+      } 
   }
   
+  /**
+   * Generates a SOAP client for the given service name. Generates a user level
+   * error if this instalation of PHP does not have the extension for SOAP
+   * installed.
+   * @param string $serviceName the name of the service to generate a client for
+   * @return AdsSoapClient an instantiated SOAP client
+   */
+  public function GenerateSoapClient($serviceName) {
+    if (extension_loaded('soap')) {
+      if($this->DoRequireOnce($serviceName)) {
+        $soapClient = $this->GenerateServiceClient($serviceName);
+        } else {
+        $soapClient = 'TODO: YDirectSoapClientFactory - Create SoapClient for call to service';
+        }
+      return $soapClient;
+    } else {
+      trigger_error('This client library requires the SOAP extension to be'
+          . ' activated. See http://php.net/manual/en/soap.installation.php for'
+          . ' details.', E_USER_ERROR);
+    }
+  }
+
 }
 
 ?>

@@ -1,10 +1,13 @@
 <?php
 
 /**
- * APIAdLib samples
+ * APIAdLib Samples
+ *  Check Autoload Library SOAP Client for Yandex.Direct  
  *  
  * This sample demonstrate simple work with library with autoloading
  * Sample demonstrate using nonWSDL-SOAP+OAUTH protocols and calls PingAPI(), 
+ * GetAvailableVersions(), GetVersion(), GetClientInfo(), GetClientsList(), 
+ * GetClientsUnits(), GetCampaignsList(), GetCampaignsParams() 
  *   
  * PHP Version 5.2    
  *   
@@ -25,14 +28,12 @@
  *
  */ 
 
-error_reporting(E_STRICT | E_ALL);
+error_reporting(E_ALL & ~E_STRICT);
 
 define('_APIADLIB_PATHTO', '/..'); // path to apiadlib dir
 define('_APIADLIB_AUTHINI_PATHTO', '../../../ini/'); // path to ini files
 
 require_once dirname(__FILE__) . _APIADLIB_PATHTO . '/apiadlib.autoload.php';
-
-echo __FILE__."<br />";
 
 $wsdlurl = NULL;
 $soap_params = array(
@@ -44,11 +45,8 @@ $soap_params = array(
  *  
  */  
 $auth_file = _APIADLIB_AUTHINI_PATHTO.'auth_ydirect.ini';
-echo $auth_file."<br />";
 $user = new YDirectUser($auth_file);
-$user->ValidateUser();
-//var_dump($user);
-
+var_dump($user);
 
 /**
  * Initializing SOAP client object
@@ -63,12 +61,13 @@ var_dump($client);
  */  
 $result = $client->PingAPI();
 echo "<br />PingAPI(): "; var_dump($result);
-//var_dump($client);
 
-# Gets array of available API versions
+/**
+ * Gets array of available API versions
+ *  
+ */ 
 $result = $client->GetAvailableVersions();
 echo "<br />GetAvailableVersions(): "; var_dump($result);
-//var_dump($client);
 
 /**
  * Get connected version
@@ -76,7 +75,6 @@ echo "<br />GetAvailableVersions(): "; var_dump($result);
  */  
 $result = $client->GetVersion();
 echo "<br />GetVersion(): "; var_dump($result);
-//var_dump($client);
 
 /**
  * Get user's Info
@@ -84,7 +82,6 @@ echo "<br />GetVersion(): "; var_dump($result);
  */ 
 $result = $client->GetClientInfo();
 echo "<br />GetClientInfo(): "; var_dump($result);
-//var_dump($client);
 
 /**
   * Get User's clients list (user is agency account)
@@ -92,9 +89,9 @@ echo "<br />GetClientInfo(): "; var_dump($result);
   */  
 $clients_list = $client->GetClientsList();
 echo "<br />GetClientsList(): "; var_dump($clients_list);
-//var_dump($client);
 
 /**
+ * Get clients units balance
  * Get list of clients campaigns with short data
  *  
  */ 
@@ -103,11 +100,12 @@ if(count((array)$clients_list) > 0) {
   foreach((array)$clients_list as $key => $client_data) {
     $clients_logins[] = $client_data->Login;
     }
+  $clients_units = $client->GetClientsUnits($clients_logins);
+  echo "<br />GetClientsUnits(): "; var_dump($clients_units);
   $clients_campaigns = $client->GetCampaignsList($clients_logins);
   echo "<br />GetCampaignsList(): "; var_dump($clients_campaigns);
-  //var_dump($client);
   } else {
-  echo "<br />GetCampaignsList(): There is no clients to get any campaigns.";
+  echo "<br />GetClientsUnits(), GetCampaignsList(): There is no clients to get any campaigns.";
   }
   
 /**
@@ -121,7 +119,6 @@ if(count((array)$clients_campaigns) > 0) {
     } 
   $campaigns_params = $client->GetCampaignsParams($campaigns_ids);
   echo "<br />GetCampaignsParams(): "; var_dump($campaigns_params);
-  //var_dump($client);
   } else {
   echo "<br />GetCampaignsParams(): There is no campaigns to get params.";
   }

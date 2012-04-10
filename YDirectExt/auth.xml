@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<auth>
+  <login>ENTER_YOUR_LOGIN_HERE</login>
+  <email>ENTER_YOUR_EMAIL_HERE</email>
+  <oauth>
+    <locale>ru</locale>
+    <login>ENTER_YOUR_OAUTH_LOGIN_HERE</login>
+    <token comment="oauth token">ENTER_YOUR_OAUTH_TOKEN_HERE</token>
+    <application_id comment="On oauth.yandex.ru called as client_id">ENTER_YOUR_APPLICATION_ID_HERE</application_id>
+  </oauth>
+</auth>
