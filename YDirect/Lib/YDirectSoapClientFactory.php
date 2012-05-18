@@ -80,10 +80,21 @@ class YDirectSoapClientFactory extends SoapClientFactory {
     if (extension_loaded('soap')) {
       if($this->DoRequireOnce($serviceName)) {
         $soapClient = $this->GenerateServiceClient($serviceName);
+        return $soapClient;
         } else {
-        $soapClient = 'TODO: YDirectSoapClientFactory - Create SoapClient for call to service';
+        //TODO: rewrite carefully ancestor's GenerateServiceClient()
+        $wsdlurl = NULL;
+        $soap_params = array(
+          'trace'=> 1,
+          );
+        $user = $this->GetAdsUser();
+        $service = 'APIAdLib';
+        $namespace = 'API';
+        
+        $soapClient = new YDirectSoapClient($wsdlurl, $soap_params, $user, $service, $namespace);
+        $result = $soapClient->{$serviceName}();
+        return $result; 
         }
-      return $soapClient;
     } else {
       trigger_error('This client library requires the SOAP extension to be'
           . ' activated. See http://php.net/manual/en/soap.installation.php for'

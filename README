@@ -1,3 +1,24 @@
+version 0.2.1-dev from 13.05.2012
+  - YDirectSoapClientFactory - factory now works with undefined method calls, but
+    without arguments. Later make it more compatible with GAW library.
+  - User->__call() - corrected.
+  - YDirectSoapClientFactory can calls undefined functions, but without arguments
+    passed (see sample /apiadlib/Samples/yd-libext-usercall-check1.php).
+  BUG: 13.05.2012 14:40:23 Some result arrays needs to reset (as GetClientsUnits())  
+  TODO:
+  - 13.05.2012 11:23:03 Write analog of yd-common-check sample & checks ads systems
+    but apiadlib based.
+  - 05.04.2012 17:32:54 YD: accept only ns1:API - functions and parameters, 
+    others ENV append automaticaly.
+  - 06.04.2012 13:45:05 XML accepted params needs to uniqually extends GAW
+  - 12.05.2012 13:39:23 correct work with logs at YDirectUserExt:
+    protected 'defaultLogsDir' => 
+      string 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx\apiadlib\YDirectExt\Lib' (length=52)
+    protected 'logsRelativePathBase' => 
+      string 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx\apiadlib\YDirectExt\Lib' (length=52)
+  - 12.05.2012 15:11:39 YDirectSoapClientFactory undefined calls must process 
+    with arguments too.
+    
 version 0.2.0-dev from 10.04.2012
   - <Lib>Ext library extensions added. Recommends to use more flexible and usable
     'Ext' extensions of library classes. <Lib>Ext extensions oriented to work with
