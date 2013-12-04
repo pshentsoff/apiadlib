@@ -1,22 +1,15 @@
-<<<<<<< HEAD:README
+## APIAdLib
 
 API library for advertise at Yandex.Direct and  Google.AdWords
 
-
-- Project's Blog (russian): http://apiadlib.pshentsoff.ru
-- Contributors: pshentsoff
-- Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGRFBSFEW5V3Y
-- Tags: APIAdLib, AMS, Yandex.Direct, Google.AdWords
-- Author: pshentsoff
-- Author's homepage: http://pshentsoff.ru
-- License: Apache License, Version 2.0
-- License URI: http://www.apache.org/licenses/LICENSE-2.0.html
-
-version 0.2.1-dev from 13.05.2012
-=======
-## APIAdLib
-
-API Library for common Advertisement services (Google AdWords, Yandex.Direct)
+-   Project's Blog (russian): http://apiadlib.pshentsoff.ru
+-   Contributors: pshentsoff
+-   Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGRFBSFEW5V3Y
+-   Tags: APIAdLib, AMS, Yandex.Direct, Google.AdWords
+-   Author: pshentsoff
+-   Author's homepage: http://pshentsoff.ru
+-   License: Apache License, Version 2.0
+-   License URI: http://www.apache.org/licenses/LICENSE-2.0.html
 
 ### Version history:
 
@@ -24,7 +17,6 @@ API Library for common Advertisement services (Google AdWords, Yandex.Direct)
 -   YDirectUtils
 
 #### version 0.2.1-dev from 13.05.2012
->>>>>>> a99759b008432d3f90f2fdbc2fefe070adf5d279:README.md
   - YDirectSoapClientFactory - factory now works with undefined method calls, but
     without arguments. Later make it more compatible with GAW library.
   - User->__call() - corrected.
