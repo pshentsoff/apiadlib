@@ -54,7 +54,7 @@ function YDirectIsAgency($soap_client) {
   //DEBUG: 
   //kpr($resp);
   
-  $role = huf_issetor($resp->Role, '');   
+  $role = isset($resp->Role) ? $resp->Role : '';
   return (strtolower($role) == 'agency');
   
   }    
