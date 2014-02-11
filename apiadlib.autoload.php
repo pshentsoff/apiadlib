@@ -54,7 +54,8 @@ class APIAdLibAutoload {
     'AdWords/v201008/',
     'AdWords/v201101/',
     'AdWords/v201109/',
-    
+    'AdWords/v201309/',
+
     );
   
   // Saves last loaded filename for future logging purposes  

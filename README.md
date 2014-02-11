@@ -12,6 +12,7 @@ API library for advertise at Yandex.Direct and  Google.AdWords
 -   [Author's homepage](http://pshentsoff.ru "Author's homepage")
 -   License: Apache License, Version 2.0
 -   License URI: http://www.apache.org/licenses/LICENSE-2.0.html
+-   Issues tracker of AdWorks Team projects: [AdWorks/APIAdLib Issue Tracker](https://bitbucket.org/adworks/apiadlib/issues "AdWorks/APIAdLib Issue Tracker")
 
 ### Useful links:
 -   [Google AdWords API documentation](https://developers.google.com/adwords/api/ "Google AdWords API documentation")
