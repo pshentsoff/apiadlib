@@ -2,16 +2,19 @@
 
 API library for advertise at Yandex.Direct and  Google.AdWords
 
--   Project's Blog (russian): http://apiadlib.pshentsoff.ru
+#### Version 0.3.1-dev
+
+-   [Project's Blog (russian)](http://apiadlib.pshentsoff.ru "APIAdLib blog")
 -   Contributors: pshentsoff
--   Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGRFBSFEW5V3Y
+-   [Donate link](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGRFBSFEW5V3Y "Please, donate to support project")
 -   Tags: APIAdLib, AMS, Yandex.Direct, Google.AdWords
 -   Author: pshentsoff
--   Author's homepage: http://pshentsoff.ru
+-   [Author's homepage](http://pshentsoff.ru "Author's homepage")
 -   License: Apache License, Version 2.0
 -   License URI: http://www.apache.org/licenses/LICENSE-2.0.html
 
-#### Version 0.3.1-dev
+### Useful links:
+-   [Google AdWords API documentation](https://developers.google.com/adwords/api/ "Google AdWords API documentation")
 
 ### Version history:
 
