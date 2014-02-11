@@ -1,3 +1,12 @@
+
+#### Version 0.3.1-dev
+
+### Version history
+
+version 0.3
+-   Google AdWords v201309 included
+-   apiadlib.init.php - common library include file
+
 version 0.2.1-dev from 13.05.2012
   - YDirectSoapClientFactory - factory now works with undefined method calls, but
     without arguments. Later make it more compatible with GAW library.

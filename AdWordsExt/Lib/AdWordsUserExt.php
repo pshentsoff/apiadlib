@@ -313,12 +313,12 @@ class AdWordsUserExt extends AdWordsUser {
       }
       
     // Logging settings.
-    if ($settings['logging']['path_relative'] == 1) {
+    if (isset($settings['logging']['path_relative']) && $settings['logging']['path_relative'] == 1) {
       $path = realpath($this->_logsRelativePathBase . '/'
           . $settings['logging']['lib_log_dir_path']);
       $this->logsDirectory = ($path === FALSE) ? $this->_defaultLogsDir : $path;
       } else {
-      $this->logsDirectory = $settings['logging']['lib_log_dir_path'];
+      $this->logsDirectory = isset($settings['logging']['lib_log_dir_path']) ? $settings['logging']['lib_log_dir_path'] : '';
       }
     //TODO ~ 03.04.2012 14:20:47 check this
     $this->InitLogs();
