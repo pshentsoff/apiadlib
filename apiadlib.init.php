@@ -17,5 +17,10 @@
  * @created     12.02.14
  */
 
+error_reporting(E_STRICT | E_ALL);
+
+define('ADWORDS_VERSION', 'v201309');
+
+
 include_once 'apiadlib.functions.inc';
 require_once 'apiadlib.autoload.php';
