@@ -24,16 +24,14 @@
  * @copyright  2011, Google Inc. All Rights Reserved.
  * @license    http://www.apache.org/licenses/LICENSE-2.0 Apache License,
  *             Version 2.0
- * @author     Adam Rogal <api.arogal@gmail.com>
- * @author     Eric Koleda <api.ekoleda@gmail.com>
+ * @author     Adam Rogal
+ * @author     Eric Koleda
+ * @author     Vincent Tsao
  */
-
-/** Required classes. **/
-require_once dirname(__FILE__) . '/../Util/Logger.php';
-require_once dirname(__FILE__) . '/../Util/PeclOAuthHandler.php';
-require_once dirname(__FILE__) . '/../Util/AndySmithOAuthHandler.php';
-require_once 'SoapClientFactory.php';
-require_once 'ValidationException.php';
+require_once 'Google/Api/Ads/Common/Util/Logger.php';
+require_once 'Google/Api/Ads/Common/Util/SimpleOAuth2Handler.php';
+require_once 'Google/Api/Ads/Common/Lib/SoapClientFactory.php';
+require_once 'Google/Api/Ads/Common/Lib/ValidationException.php';
 
 /**
  * User class for all API modules using the Ads API.
@@ -41,6 +39,10 @@ require_once 'ValidationException.php';
  * @subpackage Lib
  */
 abstract class AdsUser {
+
+  private $libVersion;
+  private $libName;
+
   private $requestHeaderElements;
   private $defaultServer;
   private $defaultVersion;
@@ -49,8 +51,8 @@ abstract class AdsUser {
   private $soapCompressionLevel;
   private $wsdlCache;
   private $authServer;
-  private $oauthInfo;
-  private $oauthHandler;
+  private $oauth2Info;
+  private $oauth2Handler;
 
   /**
    * Constructor for AdsUser.
@@ -58,13 +60,16 @@ abstract class AdsUser {
    */
   protected function __construct() {
     $this->requestHeaderElements = array();
-    $this->logsDirectory = '.';
-    $this->authServer = 'https://www.google.com';
+
+    $buildIni = parse_ini_file(dirname(__FILE__) .
+        '/../Lib/build.ini', FALSE);
+    $this->libVersion = $buildIni['LIB_VERSION'];
+    $this->libName = $buildIni['LIB_NAME'];
   }
 
   /**
    * Gets the authenticaiton value for the <var>$authVar</var> supplied. If
-   * the <var>$authVar</var> is set, it is is used. Otherwirse, the supplied
+   * the <var>$authVar</var> is set, it is is used. Otherwise, the supplied
    * <var>$authenticationIni</var> is queired for the variable. If none is found
    * <var>NULL</var> is returned.
    * @param string $authVar the default value for the authenticaiton variable
@@ -168,7 +173,6 @@ abstract class AdsUser {
     Logger::SetLogLevel(Logger::$REQUEST_INFO_LOG, Logger::$INFO);
   }
 
-
   /**
    * Loads the settings for this client library. If the settings INI file
    * located at <var>$settingsIniPath</var> cannot be loaded, then the
@@ -187,116 +191,107 @@ abstract class AdsUser {
       $defaultServer, $defaultLogsDir, $logsRelativePathBase) {
     // Set no time limit for PHP operations.
     set_time_limit(0);
-
     ini_set('default_socket_timeout', 480);
 
     $settingsIni = parse_ini_file($settingsIniPath, TRUE);
 
-    if (isset($settingsIni)) {
-      // Logging settings.
-      if ($settingsIni['LOGGING']['PATH_RELATIVE'] == 1) {
-        $path = realpath($logsRelativePathBase . '/'
-            . $settingsIni['LOGGING']['LIB_LOG_DIR_PATH']);
-        if ($path === FALSE) {
-          $this->logsDirectory = $defaultLogsDir;
-        } else {
-          $this->logsDirectory = $path;
-        }
-      } else {
-        $this->logsDirectory = $settingsIni['LOGGING']['LIB_LOG_DIR_PATH'];
-      }
-      $this->InitLogs();
+    // Logging settings.
+    $pathRelative = $this->GetSetting($settingsIni, 'LOGGING',
+        'PATH_RELATIVE', FALSE);
+    $libLogDirPath = $this->GetSetting($settingsIni, 'LOGGING',
+        'LIB_LOG_DIR_PATH', $defaultLogsDir);
+    $relativePath = realpath($logsRelativePathBase . '/' . $libLogDirPath);
 
-      // Server settings.
-      if (array_key_exists('SERVER', $settingsIni)
-          && array_key_exists('DEFAULT_VERSION', $settingsIni['SERVER'])) {
-        $this->defaultVersion = $settingsIni['SERVER']['DEFAULT_VERSION'];
-      } else {
-        $this->defaultVersion = $defaultVersion;
-      }
-      if (array_key_exists('SERVER', $settingsIni)
-          && array_key_exists('DEFAULT_SERVER', $settingsIni['SERVER'])) {
-        $this->defaultServer = $settingsIni['SERVER']['DEFAULT_SERVER'];
-      } else {
-        $this->defaultServer = $defaultServer;
-      }
-
-      // SOAP settings.
-      if (array_key_exists('SOAP', $settingsIni)
-          && array_key_exists('COMPRESSION', $settingsIni['SOAP'])) {
-        $this->soapCompression = (bool) $settingsIni['SOAP']['COMPRESSION'];
-      } else {
-        // Default to using compression.
-        $this->soapCompression = TRUE;
-      }
-      if (array_key_exists('SOAP', $settingsIni)
-          && array_key_exists('COMPRESSION_LEVEL', $settingsIni['SOAP'])
-          && $settingsIni['SOAP']['COMPRESSION_LEVEL'] >= 1
-          && $settingsIni['SOAP']['COMPRESSION_LEVEL'] <= 9) {
-        $this->soapCompressionLevel =
-            (int) $settingsIni['SOAP']['COMPRESSION_LEVEL'];
-      } else {
-        // Default to using compression level 1.
-        $this->soapCompressionLevel = 1;
-      }
-      if (array_key_exists('SOAP', $settingsIni)
-          && array_key_exists('WSDL_CACHE', $settingsIni['SOAP'])
-          && $settingsIni['SOAP']['WSDL_CACHE'] >= 0
-          && $settingsIni['SOAP']['WSDL_CACHE'] <= 3) {
-        $this->wsdlCache = (int) $settingsIni['SOAP']['WSDL_CACHE'];
-      } else {
-        // Default to none.
-        $this->wsdlCache = WSDL_CACHE_NONE;
-      }
-
-      // Proxy settings.
-      if (array_key_exists('PROXY', $settingsIni)) {
-        if (array_key_exists('HOST', $settingsIni['PROXY'])) {
-          $this->Define('HTTP_PROXY_HOST', $settingsIni['PROXY']['HOST']);
-        }
-        if (array_key_exists('PORT', $settingsIni['PROXY'])) {
-          $this->Define('HTTP_PROXY_PORT', (int) $settingsIni['PROXY']['PORT']);
-        }
-        if (array_key_exists('USER', $settingsIni['PROXY'])) {
-          $this->Define('HTTP_PROXY_USER', $settingsIni['PROXY']['USER']);
-        }
-        if (array_key_exists('PASSWORD', $settingsIni['PROXY'])) {
-          $this->Define('HTTP_PROXY_PASSWORD',
-              $settingsIni['PROXY']['PASSWORD']);
-        }
-      }
-
-      // Auth settings.
-      if (array_key_exists('AUTH', $settingsIni)) {
-        if (array_key_exists('AUTH_SERVER', $settingsIni['AUTH'])) {
-          $this->authServer = $settingsIni['AUTH']['AUTH_SERVER'];
-        }
-        if (array_key_exists('OAUTH_HANDLER_CLASS', $settingsIni['AUTH'])) {
-          $this->oauthHandler =
-              new $settingsIni['AUTH']['OAUTH_HANDLER_CLASS']();
-        } else {
-          $extensions = get_loaded_extensions();
-          if (in_array('OAuth', $extensions)) {
-            $this->oauthHandler = new PeclOAuthHandler();
-          } else {
-            $this->oauthHandler = new AndySmithOAuthHandler();
-          }
-        }
-      }
-
-      // SSL settings.
-      if (array_key_exists('SSL', $settingsIni)) {
-        if (array_key_exists('VERIFY_PEER', $settingsIni['SSL'])) {
-          $this->Define('SSL_VERIFY_PEER', $settingsIni['SSL']['VERIFY_PEER']);
-        }
-        if (array_key_exists('CA_PATH', $settingsIni['SSL'])) {
-          $this->Define('SSL_CA_PATH', $settingsIni['SSL']['CA_PATH']);
-        }
-        if (array_key_exists('CA_FILE', $settingsIni['SSL'])) {
-          $this->Define('SSL_CA_FILE', $settingsIni['SSL']['CA_FILE']);
-        }
-      }
+    if ($pathRelative && $relativePath) {
+      $this->logsDirectory = $relativePath;
+    } elseif (!$pathRelative && $libLogDirPath) {
+      $this->logsDirectory = $libLogDirPath;
+    } else {
+      $this->logsDirectory = $defaultLogsDir;
     }
+    $this->InitLogs();
+
+    // Server settings.
+    $this->defaultVersion = $this->GetSetting($settingsIni, 'SERVER',
+        'DEFAULT_VERSION', $defaultVersion);
+    $this->defaultServer = $this->GetSetting($settingsIni, 'SERVER',
+        'DEFAULT_SERVER', $defaultServer);
+
+    // SOAP settings.
+    $this->soapCompression = (bool) $this->GetSetting($settingsIni, 'SOAP',
+        'COMPRESSION', TRUE);
+    $this->soapCompressionLevel = $this->GetSetting($settingsIni, 'SOAP',
+        'COMPRESSION_LEVEL', 1);
+    if ($this->soapCompressionLevel < 1 || $this->soapCompressionLevel > 9) {
+      $this->soapCompressionLevel = 1;
+    }
+    $this->wsdlCache = (int) $this->GetSetting($settingsIni, 'SOAP',
+        'WSDL_CACHE', WSDL_CACHE_NONE);
+    if ($this->wsdlCache < 0 || $this->wsdlCache > 3) {
+      $this->wsdlCache = WSDL_CACHE_NONE;
+    }
+
+    // Proxy settings.
+    $proxyHost = $this->GetSetting($settingsIni, 'PROXY', 'HOST');
+    if (isset($proxyHost)) {
+      $this->Define('HTTP_PROXY_HOST', $proxyHost);
+    }
+    $proxyPort = $this->GetSetting($settingsIni, 'PROXY', 'PORT');
+    if (isset($proxyPort)) {
+      $this->Define('HTTP_PROXY_PORT', (int) $proxyPort);
+    }
+    $proxyUser = $this->GetSetting($settingsIni, 'PROXY', 'USER');
+    if (isset($proxyUser)) {
+      $this->Define('HTTP_PROXY_USER', $proxyUser);
+    }
+    $proxyPassword = $this->GetSetting($settingsIni, 'PROXY', 'PASSWORD');
+    if (isset($proxyPassword)) {
+      $this->Define('HTTP_PROXY_PASSWORD', $proxyPassword);
+    }
+
+    // Auth settings.
+    $this->authServer = $this->GetSetting($settingsIni, 'AUTH', 'AUTH_SERVER',
+        'https://accounts.google.com');
+    // OAuth2.
+    $this->oauth2Handler = $this->GetDefaultOAuth2Handler(
+        $this->GetSetting($settingsIni, 'AUTH', 'OAUTH2_HANDLER_CLASS'));
+
+    // SSL settings.
+    $sslVerifyPeer = $this->GetSetting($settingsIni, 'SSL', 'VERIFY_PEER');
+    if (isset($sslVerifyPeer)) {
+      $this->Define('SSL_VERIFY_PEER', $sslVerifyPeer);
+    }
+    $sslVerifyHost = $this->GetSetting($settingsIni, 'SSL', 'VERIFY_HOST');
+    if (isset($sslVerifyHost)) {
+      $this->Define('SSL_VERIFY_HOST', (int) $sslVerifyHost);
+    }
+    $sslCaPath = $this->GetSetting($settingsIni, 'SSL', 'CA_PATH');
+    if (isset($sslCaPath)) {
+      $this->Define('SSL_CA_PATH', $sslCaPath);
+    }
+    $sslCaFile = $this->GetSetting($settingsIni, 'SSL', 'CA_FILE');
+    if (isset($sslCaFile)) {
+      $this->Define('SSL_CA_FILE', $sslCaFile);
+    }
+  }
+
+  /**
+   * Gets the value for a given setting based on the contents of the parsed INI
+   * file.
+   * @param array $settings the parsed settings INI file
+   * @param string $section the name of the section containing the setting
+   * @param string $name the name of the setting
+   * @param mixed $default the default value of the setting
+   * @return string the value of the setting
+   */
+  private function GetSetting($settings, $section, $name, $default = NULL) {
+    if (!$settings || !array_key_exists($section, $settings)
+        || !array_key_exists($name, $settings[$section])
+        || $settings[$section][$name] == NULL
+        || $settings[$section][$name] == '') {
+      return $default;
+    }
+    return $settings[$section][$name];
   }
 
   /**
@@ -308,7 +303,7 @@ abstract class AdsUser {
    */
   private function Define($name, $value) {
     if (!defined($name) || (constant($name) != $value)) {
-      define ($name, $value);
+      define($name, $value);
     }
   }
 
@@ -385,106 +380,127 @@ abstract class AdsUser {
   }
 
   /**
-   * Gets the OAuth info for this user.
-   * @return array the OAuth info for this user
+   * Gets the OAuth2 info for this user.
+   * @return array the OAuth2 info for this user
    */
-  public function GetOAuthInfo() {
-    return $this->oauthInfo;
+  public function GetOAuth2Info() {
+    return $this->oauth2Info;
   }
 
   /**
-   * Sets the OAuth info for this user.
-   * @param array $oauthInfo the OAuth info for this user
+   * Sets the OAuth2 info for this user.
+   * @param array $oauth2Info the OAuth2 info for this user
    */
-  public function SetOAuthInfo($oauthInfo) {
-    $this->oauthInfo = $oauthInfo;
+  public function SetOAuth2Info($oauth2Info) {
+    $this->oauth2Info = $oauth2Info;
   }
 
   /**
-   * Gets the OAuth handler for this user.
-   * @return OAuthHandler the OAuth handler for this user
+   * Gets the OAuth2 handler for this user.
+   * @return OAuth2Handler the OAuth2 handler for this user
    */
-  public function GetOAuthHandler() {
-    return $this->oauthHandler;
+  public function GetOAuth2Handler() {
+    return $this->oauth2Handler;
   }
 
   /**
-   * Sets the OAuth handler for this user.
-   * @param array $oauthHandler the OAuth handler for this user
+   * Sets the OAuth2 handler for this user.
+   * @param array $oauth2Handler the OAuth2 handler for this user
    */
-  public function SetOAuthHandler($oauthHandler) {
-    $this->oauthHandler = $oauthHandler;
+  public function SetOAuth2Handler($oauth2Handler) {
+    $this->oauth2Handler = $oauth2Handler;
   }
 
   /**
-   * Gets the client library identifier used for user-agent fields.
-   * @return string a unique client library identifier
+   * Gets the appropriate user agent header name for the API this client library
+   * is targeting.
+   * @return string The user agent header name.
    */
-  abstract public function GetClientLibraryIdentifier();
+  abstract protected function GetUserAgentHeaderName();
 
   /**
-   * Requests a new OAuth token.
-   * @param $callbackUrl the URL to return to after the token is authorized
-   * @param $server the AdWords API server that requests will be made to
-   * @param $applicationName the optional application name to present to the
-   *     user during token authorization
+   * Gets the name and version of this client library.
+   * @return array An array containing the name and version of this client
+   *     library, e.g.: ['DfpApi-PHP', '2.13.0'].
    */
-  public function RequestOAuthToken($callbackUrl = NULL, $server = NULL,
-      $applicationName = NULL) {
-    $server = isset($server) ? $server : $this->GetDefaultServer();
-    $scope = $this->GetOAuthScope($server);
-    $this->oauthInfo = $this->GetOAuthHandler()->GetRequestToken(
-        $this->oauthInfo, $scope, $this->GetAuthServer(), $callbackUrl,
-        $applicationName);
+  abstract protected function GetClientLibraryNameAndVersion();
+
+  /**
+   * Gets common PHP user agent parts for ads client libraries such as PHP
+   * version, operating system, browser, or if compression is being used or not.
+   * @return array An array of arrays with each inner array representing a user
+   *     agent parts, e.g.: ['PHP', '5.3.2'] or ['PHP', '5.4.0'].
+   */
+  private function GetCommonClientLibraryUserAgentParts() {
+    return array(array($this->libName, $this->libVersion), array('PHP',
+        PHP_VERSION));
   }
 
   /**
-   * Gets the OAuth authorization URL for the OAuth token.
-   * @returns string the URL used to authorize the token
+   * Gets the user agent string that identifies this library for this user.
+   * @return string A user agent string.
    */
-  public function GetOAuthAuthorizationUrl() {
-    return $this->GetOAuthHandler()->GetAuthorizationUrl($this->oauthInfo,
-        $this->GetAuthServer());
+  public function GetClientLibraryUserAgent() {
+    return $this->GetHeaderValue($this->GetUserAgentHeaderName());
   }
 
   /**
-   * Upgrades the authorized OAuth token.
-   * @param string $verifier the verifier string returned from authorizing the
-   *     token
+   * Gets all the user agent parts that identify this client library.
+   * @return array An array of all the user agent parts that identify this
+   *     client library where each user agent part has been joined by a '/'
+   *     (forward slash).
    */
-  public function UpgradeOAuthToken($verifier) {
-    $this->oauthInfo = $this->GetOAuthHandler()->GetAccessToken(
-        $this->oauthInfo, $verifier, $this->GetAuthServer());
+  private function GetAllClientLibraryUserAgentParts() {
+    $allUserAgentParts[] = implode('/',
+        $this->GetClientLibraryNameAndVersion());
+
+    foreach ($this->GetCommonClientLibraryUserAgentParts() as $userAgentPart) {
+      $allUserAgentParts[] = implode('/', $userAgentPart);
+    }
+
+    return $allUserAgentParts;
   }
 
   /**
-   * Validates that the OAuth info is complete.
+   * Sets the user agent string that identifies this library for this user.
+   *
+   * TODO(vtsao): The current contract requires that subclasses call this method
+   * in their constructor.
+   *
+   * @param $applicationName The application name that will appear in this
+   *     header.
+   */
+  public function SetClientLibraryUserAgent($applicationName) {
+    $this->SetHeaderValue($this->GetUserAgentHeaderName(), sprintf("%s (%s)",
+        $applicationName, implode(', ',
+        $this->GetAllClientLibraryUserAgentParts())));
+  }
+
+  /**
+   * Get the default OAuth2 Handler for this user.
+   * @param NULL|string $className the name of the oauth2Handler class or NULL
+   * @return mixed the configured OAuth2Handler class
+   */
+  public abstract function GetDefaultOAuth2Handler($className = NULL);
+
+  /**
+   * Validates that the OAuth2 info is complete.
    * @throws ValidationException if there are any validation errors
    * @access protected
    */
-  protected function ValidateOAuthInfo() {
-    if (!array_key_exists('oauth_consumer_key', $this->oauthInfo)) {
-      throw new ValidationException('oauthInfo', NULL,
-          'oauth_consumer_key is required and cannot be NULL.');
+  protected function ValidateOAuth2Info() {
+    $requiredFields = array('client_id', 'client_secret');
+    foreach ($requiredFields as $field) {
+      if (empty($this->oauth2Info[$field])) {
+        throw new ValidationException($field, NULL,
+            sprintf('%s is required.', $field));
+      }
     }
-    if (!array_key_exists('oauth_consumer_secret', $this->oauthInfo)) {
-      throw new ValidationException('oauthInfo', NULL,
-          'oauth_consumer_secret is required and cannot be NULL.');
-    }
-    if (!array_key_exists('oauth_token', $this->oauthInfo)) {
-      throw new ValidationException('oauthInfo', NULL,
-          'oauth_token is required and cannot be NULL.');
-    }
-    if (!array_key_exists('oauth_token_secret', $this->oauthInfo)) {
-      throw new ValidationException('oauthInfo', NULL,
-          'oauth_token_secret is required and cannot be NULL.');
+    if (empty($this->oauth2Info['access_token'])
+        && empty($this->oauth2Info['refresh_token'])) {
+      throw new ValidationException('refresh_token', NULL,
+          'Either the refresh_token or the access_token is required.');
     }
   }
-
-  /**
-   * Gets the OAuth scope for this user.
-   * @param string $server the AdWords API server that requests will be made to
-   * @return string the scope to use when requesting an OAuth token
-   */
-  abstract protected function GetOAuthScope($server = NULL);
 }
+

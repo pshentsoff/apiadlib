@@ -26,7 +26,8 @@
  * @copyright  2011, Google Inc. All Rights Reserved.
  * @license    http://www.apache.org/licenses/LICENSE-2.0 Apache License,
  *             Version 2.0
- * @author     Eric Koleda <api.ekoleda@gmail.com>
+ * @author     Eric Koleda
+ * @author     Vincent Tsao
  */
 
 /**
@@ -37,6 +38,7 @@
  * @subpackage Util
  */
 class ChoiceUtils {
+
   /**
    * The ChoiceUtils class is not meant to have any instances.
    * @access private
@@ -57,3 +59,4 @@ class ChoiceUtils {
     return NULL;
   }
 }
+

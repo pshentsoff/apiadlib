@@ -2,7 +2,7 @@
 
 PHP Library layer for API Advertisement services of Yandex.Direct and Google AdWords
 
-#### Version 0.3.6-dev
+#### Version 0.3.7-dev
 
 -   [Project's Blog (russian)](http://apiadlib.pshentsoff.ru "APIAdLib blog")
 -   Contributors: pshentsoff
@@ -27,6 +27,7 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 -   update GAW Lib
 -   update GAW Util
 -   old GAW versions cleanup
+-   update GAW Common/Util, GAW Common/Lib
 
 #### version 0.2.2-dev
 -   YDirectUtils
