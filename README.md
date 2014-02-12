@@ -1,8 +1,8 @@
 ## APIAdLib
 
-API library for advertise at Yandex.Direct and  Google.AdWords
+PHP Library layer for API Advertisement services of Yandex.Direct and Google AdWords
 
-#### Version 0.3.4-dev
+#### Version 0.3.5-dev
 
 -   [Project's Blog (russian)](http://apiadlib.pshentsoff.ru "APIAdLib blog")
 -   Contributors: pshentsoff
@@ -20,9 +20,12 @@ API library for advertise at Yandex.Direct and  Google.AdWords
 ### Version history:
 
 #### version 0.3
--   Google AdWords v201309 included
--   Google AdWords v201306 included
+-   Google AdWords (GAW) v201309 included
+-   Google AdWords (GAW) v201306 included
 -   apiadlib.init.php - common library include file
+-   update GAW sample ini files
+-   update GAW Lib
+-   update GAW Util
 
 #### version 0.2.2-dev
 -   YDirectUtils
