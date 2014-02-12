@@ -26,7 +26,7 @@
  *             Version 2.0
  * @author     Paul Matthews
  */
-require_once 'Google/Api/Ads/Common/Lib/AdsUser.php';
+require_once '/../Lib/AdsUser.php';
 
 /**
  * A collection of utility methods for deprecation purposes.

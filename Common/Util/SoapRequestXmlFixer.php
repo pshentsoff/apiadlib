@@ -29,7 +29,7 @@
  * @author     Eric Koleda
  * @author     Vincent Tsao
  */
-require_once 'Google/Api/Ads/Common/Util/XmlUtils.php';
+require_once 'XmlUtils.php';
 
 /**
  * The SOAP XML request fixer used to fix some inconsistencies among the

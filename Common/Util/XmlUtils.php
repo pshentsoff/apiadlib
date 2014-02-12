@@ -28,7 +28,7 @@
  * @author     Eric Koleda
  * @author     Vincent Tsao
  */
-require_once 'Google/Api/Ads/Common/Util/MapUtils.php';
+require_once 'MapUtils.php';
 
 /**
  * A collection of utility methods for working with XML.

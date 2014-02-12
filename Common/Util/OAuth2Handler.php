@@ -27,7 +27,7 @@
  * @author     Eric Koleda
  * @author     Vincent Tsao
  */
-require_once 'Google/Api/Ads/Common/Util/UrlUtils.php';
+require_once 'UrlUtils.php';
 
 /**
  * An abstract class for Google OAuth2 flow.
