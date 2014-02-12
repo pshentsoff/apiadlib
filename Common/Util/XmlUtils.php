@@ -24,11 +24,10 @@
  * @copyright  2011, Google Inc. All Rights Reserved.
  * @license    http://www.apache.org/licenses/LICENSE-2.0 Apache License,
  *             Version 2.0
- * @author     Adam Rogal <api.arogal@gmail.com>
- * @author     Eric Koleda <api.ekoleda@gmail.com>
+ * @author     Adam Rogal
+ * @author     Eric Koleda
+ * @author     Vincent Tsao
  */
-
-/** Required classes. **/
 require_once 'MapUtils.php';
 
 /**
@@ -37,6 +36,7 @@ require_once 'MapUtils.php';
  * @subpackage Util
  */
 class XmlUtils {
+
   /**
    * Gets the DOMDocument of the <var>$xml</var>.
    * @param string $xml the XML to create a DOMDocument from
@@ -238,3 +238,4 @@ class XmlUtils {
     }
   }
 }
+

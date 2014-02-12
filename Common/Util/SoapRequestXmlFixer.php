@@ -25,11 +25,10 @@
  * @copyright  2011, Google Inc. All Rights Reserved.
  * @license    http://www.apache.org/licenses/LICENSE-2.0 Apache License,
  *             Version 2.0
- * @author     Adam Rogal <api.arogal@gmail.com>
- * @author     Eric Koleda <api.ekoleda@gmail.com>
+ * @author     Adam Rogal
+ * @author     Eric Koleda
+ * @author     Vincent Tsao
  */
-
-/** Required classes. **/
 require_once 'XmlUtils.php';
 
 /**
@@ -39,6 +38,7 @@ require_once 'XmlUtils.php';
  * @subpackage Util
  */
 class SoapRequestXmlFixer {
+
   private static $XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance';
 
   private $addXsiTypes;
@@ -231,3 +231,4 @@ class SoapRequestXmlFixer {
     }
   }
 }
+

@@ -24,20 +24,19 @@
  * @copyright  2011, Google Inc. All Rights Reserved.
  * @license    http://www.apache.org/licenses/LICENSE-2.0 Apache License,
  *             Version 2.0
- * @author     Adam Rogal <api.arogal@gmail.com>
- * @author     Eric Koleda <api.ekoleda@gmail.com>
+ * @author     Adam Rogal
+ * @author     Eric Koleda
+ * @author     Vincent Tsao
  */
-
-/** Required classes. **/
 require_once 'AdsUser.php';
 
 /**
  * Base class for all SOAP client factories of Ads client libraries.
- * @abstract
  * @package GoogleApiAdsCommon
  * @subpackage Lib
  */
 abstract class SoapClientFactory {
+
   private $user;
   private $version;
   private $server;
@@ -45,6 +44,7 @@ abstract class SoapClientFactory {
   private $headerOverrides;
 
   private static $SERVER_REGEX = '/^\w*:\/\/[^\/]*/';
+  protected static $COMPRESSION_KIND;
 
   /**
    * The constructor called by any sub-class.
@@ -107,7 +107,7 @@ abstract class SoapClientFactory {
     // Compression settings.
     if ($this->GetAdsUser()->IsSoapCompressionEnabled()) {
       $options['compression'] = SOAP_COMPRESSION_ACCEPT |
-          SOAP_COMPRESSION_GZIP |
+          self::GetCompressionKind() |
           $this->GetAdsUser()->GetSoapCompressionLevel();
       // The User-Agent HTTP header must contain the string 'gzip'.
       $options['user_agent'] = 'PHP-SOAP/'. phpversion() . ', gzip';
@@ -133,6 +133,9 @@ abstract class SoapClientFactory {
     // SSL settings.
     if (defined('SSL_VERIFY_PEER') && SSL_VERIFY_PEER != '') {
       $contextOptions['ssl']['verify_peer'] = SSL_VERIFY_PEER;
+    }
+    if (defined('SSL_VERIFY_HOST') && SSL_VERIFY_HOST) {
+      $contextOptions['ssl']['CN_match'] = parse_url($location, PHP_URL_HOST);
     }
     if (defined('SSL_CA_PATH') && SSL_CA_PATH != '') {
       $contextOptions['ssl']['capath'] = SSL_CA_PATH;
@@ -206,4 +209,23 @@ abstract class SoapClientFactory {
   public function GetProductName() {
     return $this->productName;
   }
+
+  /**
+   * Get the compression flag
+   * @return int Get the compression flag value
+   */
+  protected static function GetCompressionKind() {
+    if (!isset(self::$COMPRESSION_KIND)) {
+      if (version_compare(PHP_VERSION, '5.4.0', '>=') 
+        && version_compare(PHP_VERSION, '5.4.4', '<')
+      ) {
+        self::$COMPRESSION_KIND = SOAP_COMPRESSION_DEFLATE;
+      } else {
+        self::$COMPRESSION_KIND = SOAP_COMPRESSION_GZIP;
+      }
+    }
+
+    return self::$COMPRESSION_KIND;
+  }
 }
+

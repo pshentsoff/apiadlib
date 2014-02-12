@@ -49,12 +49,18 @@ class APIAdLibAutoload {
     // Google AdWords paths
     'AdWords/Lib/',
     'AdWords/Util/',
-    'AdWords/v200909/',
-    'AdWords/v201003/',
-    'AdWords/v201008/',
-    'AdWords/v201101/',
-    'AdWords/v201109/',
+
+      // old versions removed
+      // @since 0.3.6
+//    'AdWords/v200909/',
+//    'AdWords/v201003/',
+//    'AdWords/v201008/',
+//    'AdWords/v201101/',
+//    'AdWords/v201109/',
+
+    // @since 0.3
     'AdWords/v201309/',
+    'AdWords/v201306/',
 
     );
   

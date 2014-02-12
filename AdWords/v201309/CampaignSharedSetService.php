@@ -28,7 +28,7 @@
  */
 
 /** Required classes. **/
-require_once "Google/Api/Ads/AdWords/Lib/AdWordsSoapClient.php";
+require_once "/../Lib/AdWordsSoapClient.php";
 
 if (!class_exists("CampaignSharedSet", FALSE)) {
 /**

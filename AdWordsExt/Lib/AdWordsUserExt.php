@@ -146,6 +146,20 @@ class AdWordsUserExt extends AdWordsUser {
       $this->SetOAuthInfo((array)$auth['oauth']);
       }
 
+      // Требуется дял OAUTH2 авторизации
+      if(array_key_exists('oauth2', $auth)) {
+          $this->SetOAuth2Info((array)$auth['oauth2']);
+      }
+
+      if(array_key_exists('developertoken', $auth)) {
+          $this->SetDeveloperToken($auth['developertoken']);
+      }
+
+      // Требуется дял OAUTH2 авторизации
+      if(array_key_exists('useragent', $auth)) {
+          $this->SetUserAgent($auth['useragent']);
+      }
+
     return $result;
     
     }
