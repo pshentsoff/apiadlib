@@ -50,9 +50,9 @@ require_once dirname(__FILE__) . '/../Util/AdWordsException.php';
  */
 class AdWordsSoapClientExt extends AdWordsSoapClient {
 
-  public function __doRequest($request, $location = NULL, $action = NULL, $version = NULL) {
+  public function __doRequest($request, $location = NULL, $action = NULL, $version = NULL, $one_way = 0) {
     if(!$location) $location = $this->location;
     if(!$version) $version = $this->_soap_version;
-    return parent::__doRequest($request, $location, $action, $version);
+    return parent::__doRequest($request, $location, $action, $version, $one_way);
     }
 }

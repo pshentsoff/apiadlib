@@ -61,7 +61,7 @@ function convert_xml_to_assoc($xml) {
  */
 function print_pre($label, $var) {
     ?>
-    <p><pre>
-<span style="font-weight: bold; font-size: 18px;"><?php echo $label; ?></span><?php echo print_r($var, true); ?>
-</pre></p>
+<p><fieldset><legend><?php echo $label; ?></legend><p><pre>
+<?php echo print_r($var, true); ?>
+</pre></p></fieldset></p>
 <?php }
