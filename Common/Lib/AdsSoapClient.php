@@ -31,11 +31,11 @@
  * @author     Vincent Tsao
  */
 require_once 'AdsUser.php';
-require_once '/../Util/Logger.php';
-require_once '/../Util/MapUtils.php';
-require_once '/../Util/SoapRequestXmlFixer.php';
-require_once '/../Util/XmlUtils.php';
-require_once '/../Util/DeprecationUtils.php';
+require_once dirname(__FILE__).'/../Util/Logger.php';
+require_once dirname(__FILE__).'/../Util/MapUtils.php';
+require_once dirname(__FILE__).'/../Util/SoapRequestXmlFixer.php';
+require_once dirname(__FILE__).'/../Util/XmlUtils.php';
+require_once dirname(__FILE__).'/../Util/DeprecationUtils.php';
 
 /**
  * An extension of the {@link SoapClient} class intended to prepare

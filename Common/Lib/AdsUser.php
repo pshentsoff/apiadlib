@@ -28,8 +28,8 @@
  * @author     Eric Koleda
  * @author     Vincent Tsao
  */
-require_once '/../Util/Logger.php';
-require_once '/../Util/SimpleOAuth2Handler.php';
+require_once dirname(__FILE__) .'/../Util/Logger.php';
+require_once dirname(__FILE__) .'/../Util/SimpleOAuth2Handler.php';
 require_once 'SoapClientFactory.php';
 require_once 'ValidationException.php';
 

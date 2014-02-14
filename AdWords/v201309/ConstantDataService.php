@@ -28,7 +28,7 @@
  */
 
 /** Required classes. **/
-require_once "/../Lib/AdWordsSoapClient.php";
+require_once dirname(__FILE__)."/../Lib/AdWordsSoapClient.php";
 
 if (!class_exists("ProductConditionOperand", FALSE)) {
 /**
