@@ -26,7 +26,7 @@
  *             Version 2.0
  * @author     Paul Matthews
  */
-require_once '/../Lib/AdsUser.php';
+require_once dirname(__FILE__).'/../Lib/AdsUser.php';
 
 /**
  * A collection of utility methods for deprecation purposes.
