@@ -30,6 +30,7 @@ require_once dirname(__FILE__) . '/../../apiadlib.functions.inc';
 /** Required classes **/
 require_once dirname(__FILE__) . '/../../AdWords/Lib/AdWordsUser.php';
 require_once dirname(__FILE__) . '/../Util/AdWordsException.php';
+require_once dirname(__FILE__) . '/../../Common/Util/SimpleOAuth2Handler.php';
 
   
 /**
@@ -40,20 +41,22 @@ require_once dirname(__FILE__) . '/../Util/AdWordsException.php';
  */
 class AdWordsUserExt extends AdWordsUser {
 
-  protected $defaultLogsDir = '';
-  protected $logsRelativePathBase = '';
+    protected $defaultLogsDir = '';
+    protected $logsRelativePathBase = '';
 
-  protected $isAuthLoaded = FALSE;
-  protected $isSettingsLoaded = FALSE;
-  
-  /**
-   *  Redeclare fields that declared as 'private' at original {@link AdsUser} class
-   */     
-  protected $logsDirectory;
-  protected $soapCompression;
-  protected $soapCompressionLevel;
-  protected $wsdlCache;
-  protected $oauthHandler;
+    protected $isAuthLoaded = FALSE;
+    protected $isSettingsLoaded = FALSE;
+
+    /**
+    *  Redeclare fields that declared as 'private' at original {@link AdsUser} class
+    */
+    protected $logsDirectory;
+    protected $soapCompression;
+    protected $soapCompressionLevel;
+    protected $wsdlCache;
+//    protected $oauthHandler;
+//    protected $oauth2Handler;
+    protected $authServer;
        
  /**
    * Class constructor
@@ -70,7 +73,8 @@ class AdWordsUserExt extends AdWordsUser {
     $this->logsRelativePathBase = dirname(__FILE__);
 
     // parent constructor not needed
-    AdsUser::__construct();
+//    AdsUser::__construct();
+//      parent::__construct($auth,null,null,null,null,null,null,$settings);
   
     if(isset($auth)&&$auth) {
       $this->CheckAuth($auth);
@@ -79,7 +83,15 @@ class AdWordsUserExt extends AdWordsUser {
     if(isset($settings)&&$settings) {
       $this->CheckSettings($settings);
       }
-    }
+
+      parent::__construct($auth,null,null,null,null,null,null,$settings);
+
+      $oAuth2Handler = $this->GetOAuth2Handler();
+      if(!isset($oAuth2Handler) || empty($oAuth2Handler) || !is_object($oAuth2Handler)) {
+          $oAuth2Handler = new SimpleOAuth2Handler();
+          $this->SetOAuth2Handler($oAuth2Handler);
+      }
+  }
     
   /**
    *  Function checks $auth param and load it's data
@@ -342,7 +354,7 @@ class AdWordsUserExt extends AdWordsUser {
       if(array_key_exists('default_version', $settings['server'])) {
         $this->SetDefaultVersion($settings['server']['default_version']);
         } else {
-        $this->SetDefaultVersion(self::$DEFAULT_VERSION);
+        $this->SetDefaultVersion(ADWORDS_VERSION);
         }
       if (array_key_exists('default_server', $settings['server'])) {
         $this->SetDefaultServer($settings['server']['default_server']);
@@ -407,18 +419,19 @@ class AdWordsUserExt extends AdWordsUser {
       if (array_key_exists('auth_server', $settings['auth'])) {
         $this->authServer = $settings['auth']['auth_server'];
         }
-      //TODO: ~ 03.04.2012 18:03:09 Check this handler        
-      if (array_key_exists('oauth_handler_class', $settings['auth'])) {
-        $this->oauthHandler =
-            new $settings['auth']['oauth_handler_class']();
-        } else {
-        $extensions = get_loaded_extensions();
-        if (in_array('OAuth', $extensions)) {
-          $this->oauthHandler = new PeclOAuthHandler();
-          } else {
-          $this->oauthHandler = new AndySmithOAuthHandler();
-          }
-        }
+      // Auth 1.0 not used now
+//      if (array_key_exists('oauth_handler_class', $settings['auth'])) {
+//        $this->oauthHandler = new $settings['auth']['oauth_handler_class']();
+//        } else {
+//        $extensions = get_loaded_extensions();
+//        if (in_array('OAuth', $extensions)) {
+//          $this->oauthHandler = new PeclOAuthHandler();
+//          } else {
+//          $this->oauthHandler = new AndySmithOAuthHandler();
+//          }
+//        }
+
+        //@todo обработать auth2handler если будет указан
       }
 
     // SSL settings.

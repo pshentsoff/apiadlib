@@ -2,7 +2,7 @@
 
 PHP Library layer for API Advertisement services of Yandex.Direct and Google AdWords
 
-#### Version 0.3.11-dev
+#### Version 0.3.12-dev
 
 -   [Project's Blog (russian)](http://apiadlib.pshentsoff.ru "APIAdLib blog")
 -   Contributors: pshentsoff
@@ -13,10 +13,12 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 -   License: Apache License, Version 2.0
 -   License URI: http://www.apache.org/licenses/LICENSE-2.0.html
 -   Issues tracker of AdWorks Team projects: [AdWorks/APIAdLib Issue Tracker](https://bitbucket.org/adworks/apiadlib/issues "AdWorks/APIAdLib Issue Tracker")
+-   [AdWorks/APIAdLib git repo](https://bitbucket.org/adworks/apiadlib "AdWorks/APIAdLib git repo")
 
 ### Useful links:
 -   [Google AdWords API documentation](https://developers.google.com/adwords/api/ "Google AdWords API documentation")
 -   [Google AdWords account limits](https://support.google.com/adwords/answer/1704396 "Google AdWords account limits")
+-   [Google AdWords: Using OAuth 2.0](https://github.com/googleads/googleads-php-lib/wiki/Using-OAuth-2.0 "Using OAuth 2.0")
 
 ### Version history:
 
@@ -29,6 +31,7 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 -   update GAW Util
 -   old GAW versions cleanup
 -   update GAW Common/Util, GAW Common/Lib
+-   AdWorks/APIAdLib/Issue #2 resolved
 
 #### version 0.2.2-dev
 -   YDirectUtils
