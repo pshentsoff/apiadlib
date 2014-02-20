@@ -19,8 +19,9 @@
 
 error_reporting(E_STRICT | E_ALL);
 
-define('ADWORDS_VERSION', 'v201309');
+defined('ADWORDS_VERSION') or define('ADWORDS_VERSION', 'v201309');
 
-
-include_once 'apiadlib.functions.inc';
+require_once 'Common/Lib/ValidationException.php';
+require_once 'Common/Util/OAuth2Handler.php';
+require_once 'apiadlib.functions.inc';
 require_once 'apiadlib.autoload.php';

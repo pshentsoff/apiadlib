@@ -65,3 +65,28 @@ function print_pre($label, $var) {
 <?php echo print_r($var, true); ?>
 </pre></p></fieldset></p>
 <?php }
+
+/**
+ * Checks for any OAuth2 Errors with relevant info. Otherwise, provide a
+ * relevant error message.
+ * @param Exception $raisedException is the exception to inspect
+ */
+function check_oauth2_errors(Exception $raisedException) {
+    $errorMessage = "An error has occured:";
+    if ($raisedException instanceof OAuth2Exception) {
+        $errorMessage = "Your OAuth2 Credentials are incorrect.\nPlease see the"
+            . " GetRefreshToken.php example.";
+    } elseif ($raisedException instanceof ValidationException) {
+        $requiredAuthFields =
+            array('client_id', 'client_secret', 'refresh_token');
+        $trigger = $raisedException->GetTrigger();
+        if (in_array($trigger, $requiredAuthFields)) {
+            $errorMessage = sprintf(
+                "Your OAuth2 Credentials are missing the '%s'. Please see"
+                . " GetRefreshToken.php for further information.",
+                $trigger
+            );
+        }
+    }
+    printf("%s\n%s\n", $errorMessage, $raisedException->getMessage());
+}
