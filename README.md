@@ -2,8 +2,6 @@
 
 PHP Library layer for API Advertisement services of Yandex.Direct and Google AdWords
 
-#### Version 0.3.15-dev
-
 -   [Project's Blog (russian)](http://apiadlib.pshentsoff.ru "APIAdLib blog")
 -   Contributors: pshentsoff
 -   [Donate link](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGRFBSFEW5V3Y "Please, donate to support project")
@@ -19,6 +17,8 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 -   [Google AdWords API documentation](https://developers.google.com/adwords/api/ "Google AdWords API documentation")
 -   [Google AdWords account limits](https://support.google.com/adwords/answer/1704396 "Google AdWords account limits")
 -   [Google AdWords: Using OAuth 2.0](https://github.com/googleads/googleads-php-lib/wiki/Using-OAuth-2.0 "Using OAuth 2.0")
+
+#### Current version 0.3.16-dev
 
 ### Version history:
 

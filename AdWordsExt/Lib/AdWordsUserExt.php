@@ -30,7 +30,7 @@ require_once dirname(__FILE__) . '/../../apiadlib.functions.inc';
 /** Required classes **/
 require_once dirname(__FILE__) . '/../../AdWords/Lib/AdWordsUser.php';
 require_once dirname(__FILE__) . '/../Util/AdWordsException.php';
-require_once dirname(__FILE__) . '/../../Common/Util/SimpleOAuth2Handler.php';
+require_once dirname(__FILE__) . '/../Util/OAuth2HandlerExt.php';
 
   
 /**
@@ -88,7 +88,8 @@ class AdWordsUserExt extends AdWordsUser {
 
       $oAuth2Handler = $this->GetOAuth2Handler();
       if(!isset($oAuth2Handler) || empty($oAuth2Handler) || !is_object($oAuth2Handler)) {
-          $oAuth2Handler = new SimpleOAuth2Handler();
+          //@todo send server, scope and curlUtils to constructor?
+          $oAuth2Handler = new OAuth2HandlerExt();
           $this->SetOAuth2Handler($oAuth2Handler);
       }
   }
