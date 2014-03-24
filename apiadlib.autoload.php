@@ -58,9 +58,11 @@ class APIAdLibAutoload {
 //    'AdWords/v201101/',
 //    'AdWords/v201109/',
 
-    // @since 0.3
-    'AdWords/v201309/',
-    'AdWords/v201306/',
+      // @since 0.4
+      'AdWords/v201402/',
+      // @since 0.3
+      'AdWords/v201309/',
+      'AdWords/v201306/',
 
     );
   

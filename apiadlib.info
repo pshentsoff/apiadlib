@@ -2,5 +2,5 @@ name        = APIAdlib
 description = "Library for Google AdWords and Yandex.Direct Ads systems API."
 package     = Advertisement Management System
 core        = 7.x
-php         = 5.2
-version     = "0.2.2-dev"
+php         = 5.3
+version     = "0.4.1-dev"
