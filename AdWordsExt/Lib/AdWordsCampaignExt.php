@@ -75,8 +75,43 @@ class AdWordsCampaignExt {
 
         // Set advanced location targeting settings (optional).
         $this->geoTargetTypeSetting = new GeoTargetTypeSetting();
+
+        $this->setDefaults();
     }
 
+    function setDefaults() {
 
+        $this->budget->name = 'New Campaign Budget #' . uniqid();
+        $this->budget->period = 'DAILY';
+        $this->budgetAmount = 50000000;
+        $this->budget->deliveryMethod = 'STANDARD';
+
+        $this->campaign->name = 'New Campaign #' . uniqid();
+        // Set additional settings (optional).
+        $this->campaign->status = 'PAUSED';
+        $this->campaign->startDate = date('Ymd', strtotime('+1 day'));
+        $this->campaign->endDate = date('Ymd', strtotime('+1 month'));
+        $this->campaign->adServingOptimizationStatus = 'ROTATE';
+
+//@todo servingStatus и список в форме (https://developers.google.com/adwords/api/docs/reference/v201402/CampaignService.Campaign)
+//@todo advertisingChannelType и список в форме (https://developers.google.com/adwords/api/docs/reference/v201402/CampaignService.Campaign)  (только для добавления новых, в дальнейшем он R/O)
+
+        $this->biddingStrategyConfiguration->biddingStrategyType = 'MANUAL_CPC';
+
+        $this->biddingScheme->enhancedCpcEnabled = false;
+
+        $this->keywordMatchSetting->optIn = true;
+
+        $this->networkSetting->targetGoogleSearch = true;
+        $this->networkSetting->targetSearchNetwork = true;
+        $this->networkSetting->targetContentNetwork = true;
+
+        $this->frequencyCap->impressions = 5;
+        $this->frequencyCap->timeUnit = 'DAY';
+        $this->frequencyCap->level = 'ADGROUP';
+
+        $this->geoTargetTypeSetting->positiveGeoTargetType = 'DONT_CARE';
+        $this->geoTargetTypeSetting->negativeGeoTargetType = 'DONT_CARE';
+    }
 }
  
