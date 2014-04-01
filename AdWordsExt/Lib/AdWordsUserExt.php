@@ -122,7 +122,7 @@ class AdWordsUserExt extends AdWordsUser {
       // $auth data not detected
       } else {
 
-      throw new YDirectException("Wrong auth parameter kind.");
+      throw new Exception("Wrong auth parameter kind.");
 
       }
      
@@ -142,7 +142,7 @@ class AdWordsUserExt extends AdWordsUser {
     $result = TRUE;
     
     if(!is_array($auth)) {
-      throw new YDirectException('Array required.');
+      throw new Exception('Array required.');
       }
       
     //change all keys cases to lower
@@ -206,12 +206,12 @@ class AdWordsUserExt extends AdWordsUser {
     
     $xmlfile = realpath($auth_xmlfile);
     if(!file_exists($xmlfile)) {
-      throw new YDirectException("File not found: '$auth_xmlfile'");
+      throw new Exception("File not found: '$auth_xmlfile'");
       }
       
     $auth = simplexml_load_file($xmlfile);
     if(!$auth) {
-      throw new YDirectException("Not XML file format: '$auth_xmlfile'");
+      throw new Exception("Not XML file format: '$auth_xmlfile'");
       }
     $result = $this->LoadAuth(convert_xml_to_assoc($auth));
       
@@ -233,12 +233,12 @@ class AdWordsUserExt extends AdWordsUser {
     $inifile = realpath($auth_inifile);
     if(!file_exists($inifile)) {
       throw new 
-        YDirectException("File not found: '$auth_inifile'");
+        Exception("File not found: '$auth_inifile'");
       }
       
     $auth = parse_ini_file($inifile, TRUE);
     if(!$auth) {
-      throw new YDirectException("Not INI file format: '$auth_inifile'");
+      throw new Exception("Not INI file format: '$auth_inifile'");
       }
     $result = $this->LoadAuth((array)$auth);
       
@@ -274,7 +274,7 @@ class AdWordsUserExt extends AdWordsUser {
       // $settings - not detected
       } else {
 
-      throw new YDirectException("Wrong settings parameter kind.");
+      throw new Exception("Wrong settings parameter kind.");
 
       }
      
@@ -308,7 +308,7 @@ class AdWordsUserExt extends AdWordsUser {
     $result = TRUE;
     
     if(!is_array($settings)) {
-      throw new YDirectException('Array required.');
+      throw new Exception('Array required.');
       }
     
     //DONE: ~ 03.04.2012 9:44:11 большие/маленькие
@@ -482,12 +482,12 @@ class AdWordsUserExt extends AdWordsUser {
     
     $xmlfile = realpath($settings_xmlfile);
     if(!file_exists($xmlfile)) {
-      throw new YDirectException("File not found: '$settings_xmlfile'");
+      throw new Exception("File not found: '$settings_xmlfile'");
       }
       
     $settings = simplexml_load_file($xmlfile);
     if(!$settings) {
-      throw new YDirectException("Not XML file format: '$settings_xmlfile'");
+      throw new Exception("Not XML file format: '$settings_xmlfile'");
       }
     
     //DONE: ~ 03.04.2012 16:46:37 to array all subkeys
@@ -512,12 +512,12 @@ class AdWordsUserExt extends AdWordsUser {
     $inifile = realpath($settings_inifile);
     if(!file_exists($inifile)) {
       throw new 
-        YDirectException("File not found: '$settings_inifile'");
+        Exception("File not found: '$settings_inifile'");
       }
       
     $settings = parse_ini_file($inifile, TRUE);
     if(!$settings) {
-      throw new YDirectException("Not INI file format: '$settings_inifile'");
+      throw new Exception("Not INI file format: '$settings_inifile'");
       }
     $result = $this->LoadSettingsExt((array)$settings);
       

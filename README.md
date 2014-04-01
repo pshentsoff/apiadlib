@@ -18,12 +18,14 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 -   [Google AdWords account limits](https://support.google.com/adwords/answer/1704396 "Google AdWords account limits")
 -   [Google AdWords: Using OAuth 2.0](https://github.com/googleads/googleads-php-lib/wiki/Using-OAuth-2.0 "Using OAuth 2.0")
 
-#### Current version 0.4.1-dev
+#### Current version 0.4.2-dev
 
 ### Version history:
 
 #### version 0.4
 -   Google AdWords (GAW) v201402 included
+-   AdWordsCampaignExt
+-   AdWordsEnums.php functions
 
 #### version 0.3.16-dev
 -   Google AdWords (GAW) v201309 included

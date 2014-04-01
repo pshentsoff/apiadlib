@@ -19,7 +19,7 @@
 
 error_reporting(E_STRICT | E_ALL);
 
-defined('ADWORDS_VERSION') or define('ADWORDS_VERSION', 'v201402');
+require_once 'AdWordsExt/Lib/AdWordsEnums.php';
 
 require_once 'Common/Lib/ValidationException.php';
 require_once 'Common/Util/OAuth2Handler.php';
