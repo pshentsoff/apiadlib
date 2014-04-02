@@ -85,3 +85,9 @@ function positiveGeoTargetTypeList() {
         'LOCATION_OF_PRESENCE' => 'location of presence',
     );
 }
+
+function budgetPeriodList() {
+    return array(
+        'DAILY' => 'daily',
+    );
+}

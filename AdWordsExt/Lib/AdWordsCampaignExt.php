@@ -25,7 +25,6 @@ class AdWordsCampaignExt {
 
     public $user;
     public $budgetService;
-    public $budgetAmount;
     public $budget;
     public $campaignService;
     public $campaign;
@@ -83,7 +82,7 @@ class AdWordsCampaignExt {
 
         $this->budget->name = 'New Campaign Budget #' . uniqid();
         $this->budget->period = 'DAILY';
-        $this->budgetAmount = 50000000;
+        $this->setBudgetAmount(50000000);
         $this->budget->deliveryMethod = 'STANDARD';
 
         $this->campaign->name = 'New Campaign #' . uniqid();
@@ -112,6 +111,57 @@ class AdWordsCampaignExt {
 
         $this->geoTargetTypeSetting->positiveGeoTargetType = 'DONT_CARE';
         $this->geoTargetTypeSetting->negativeGeoTargetType = 'DONT_CARE';
+    }
+
+    function setBudgetAmount($budgetAmount) {
+        if(isset($this->budget->amount)) {
+            unset($this->budget->amount);
+        }
+        $this->budget->amount = new Money($budgetAmount);
+    }
+
+    function budgetOperation($operator = 'ADD') {
+        $operations = array();
+
+        // Create operation.
+        $operation = new BudgetOperation();
+        $operation->operand = $this->budget;
+        $operation->operator = $operator;
+        $operations[] = $operation;
+
+        // Make the mutate request.
+        $result = $this->budgetService->mutate($operations);
+        $this->campaign->budget = $result->value[0];
+//        $this->campaign->budget->budgetId = $this->budget->budgetId;
+
+        unset($operation);
+        unset($operations);
+
+        return $result;
+    }
+
+    function campaignOperation($operator = 'ADD') {
+        $operations = array();
+        $this->biddingStrategyConfiguration->biddingScheme = $this->biddingScheme;
+        $this->campaign->biddingStrategyConfiguration = $this->biddingStrategyConfiguration;
+        $this->campaign->settings[] = $this->keywordMatchSetting;
+        $this->campaign->networkSetting = $this->networkSetting;
+        $this->campaign->frequencyCap = $this->frequencyCap;
+        $this->campaign->settings[] = $this->geoTargetTypeSetting;
+
+        // Create operation.
+        $operation = new CampaignOperation();
+        $operation->operand = $this->campaign;
+        $operation->operator = $operator;
+        $operations[] = $operation;
+
+        // Make the mutate request.
+        $result = $this->campaignService->mutate($operations);
+
+        unset($operation);
+        unset($operations);
+
+        return $result;
     }
 }
  
