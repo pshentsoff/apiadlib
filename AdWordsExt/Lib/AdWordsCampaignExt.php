@@ -91,9 +91,9 @@ class AdWordsCampaignExt {
         $this->campaign->startDate = date('Ymd', strtotime('+1 day'));
         $this->campaign->endDate = date('Ymd', strtotime('+1 month'));
         $this->campaign->adServingOptimizationStatus = 'ROTATE';
+        $this->campaign->advertisingChannelType = 'SHOPPING';
 
 //@todo servingStatus и список в форме (https://developers.google.com/adwords/api/docs/reference/v201402/CampaignService.Campaign)
-//@todo advertisingChannelType и список в форме (https://developers.google.com/adwords/api/docs/reference/v201402/CampaignService.Campaign)  (только для добавления новых, в дальнейшем он R/O)
 
         $this->biddingStrategyConfiguration->biddingStrategyType = 'MANUAL_CPC';
 

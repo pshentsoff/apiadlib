@@ -91,3 +91,12 @@ function budgetPeriodList() {
         'DAILY' => 'daily',
     );
 }
+
+function advertisingChannelTypeList() {
+    return array(
+        'UNKNOWN' => 'unknown',
+        'SEARCH' => 'search',
+        'DISPLAY' => 'display',
+        'SHOPPING' => 'shopping',
+    );
+}
