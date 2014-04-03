@@ -21,6 +21,8 @@
 //    die('This script can not be executed directly.');
 //}
 
+//changed to tes problem svn commit
+
 class AdWordsCampaignExt {
 
     public $user;
@@ -34,6 +36,7 @@ class AdWordsCampaignExt {
     public $networkSetting;
     public $frequencyCap;
     public $geoTargetTypeSetting;
+    public $dynamicSearchAdsSetting;
 
     public function __construct($user = null, $auth_file = null, $settings_file = null) {
 
@@ -75,6 +78,10 @@ class AdWordsCampaignExt {
         // Set advanced location targeting settings (optional).
         $this->geoTargetTypeSetting = new GeoTargetTypeSetting();
 
+        //Setting for controlling Dynamic Search Ads (DSA).
+        //Contains the domain name and the language used by the DSA system to automatically generate landing pages and keywords for a campaign.
+        $this->dynamicSearchAdsSetting = new DynamicSearchAdsSetting();
+
         $this->setDefaults();
     }
 
@@ -91,9 +98,9 @@ class AdWordsCampaignExt {
         $this->campaign->startDate = date('Ymd', strtotime('+1 day'));
         $this->campaign->endDate = date('Ymd', strtotime('+1 month'));
         $this->campaign->adServingOptimizationStatus = 'ROTATE';
-        $this->campaign->advertisingChannelType = 'SHOPPING';
+        $this->campaign->advertisingChannelType = 'SEARCH';
 
-//@todo servingStatus и список в форме (https://developers.google.com/adwords/api/docs/reference/v201402/CampaignService.Campaign)
+        //@todo servingStatus и список в форме как R/O (https://developers.google.com/adwords/api/docs/reference/v201402/CampaignService.Campaign)
 
         $this->biddingStrategyConfiguration->biddingStrategyType = 'MANUAL_CPC';
 
@@ -111,6 +118,9 @@ class AdWordsCampaignExt {
 
         $this->geoTargetTypeSetting->positiveGeoTargetType = 'DONT_CARE';
         $this->geoTargetTypeSetting->negativeGeoTargetType = 'DONT_CARE';
+
+        $this->dynamicSearchAdsSetting->domainName = '-';
+        $this->dynamicSearchAdsSetting->languageCode = 'en';
     }
 
     function setBudgetAmount($budgetAmount) {
