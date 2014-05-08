@@ -38,6 +38,7 @@ require_once dirname(__FILE__) . '/../Util/YDirectException.php';
  * @package APIAdLib
  * @subpackage YDirectExt/Lib
  */
+//@todo Важно! Объявить новые абстрактные методы, касающиеся OAuth2 в Директе
 class YDirectUserExt extends YDirectUser {
 
   protected $defaultLogsDir = '';
@@ -284,7 +285,7 @@ class YDirectUserExt extends YDirectUser {
       throw new YDirectException('Array required.');
       }
     
-    //DONE: ~ 03.04.2012 9:44:11 �������/���������
+    //DONE: ~ 03.04.2012 9:44:11 �������/���������
     //change all keys case to lower
     array_change_key_case_recursive($settings, CASE_LOWER);
          

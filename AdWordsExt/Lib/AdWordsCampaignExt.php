@@ -17,6 +17,8 @@
  * @created     01.04.14
  */
 
+require_once dirname(__FILE__) . '/../../apiadlib.autoload.php';
+
 //if(!class_exists('')) {
 //    die('This script can not be executed directly.');
 //}
@@ -28,20 +30,80 @@ class AdWordsCampaignExt {
     public $user;
     public $campaign;
 
-    public function __construct(AdWordsUserExt $user = null, $auth_file = null, $settings_file = null) {
+    public function __construct() {
 
-        if(isset($user)) {
-            $this->user = $user;
-        } elseif(isset($auth_file) && isset($settings_file)) {
-            $this->user = new AdWordsUserExt($auth_file, $settings_file);
+        if(func_num_args() > 0) {
+
+            foreach(func_get_args() as $i => $arg) {
+
+                if($arg instanceof AdWordsUserExt) {
+                    $this->user = $arg;
+                } elseif($arg instanceof Campaign) {
+                    $this->campaign = $arg;
+                } elseif(is_string($arg)) {
+                    $this->user = new AdWordsUserExt($arg, func_get_arg($i+1));
+                    break;
+                }
+
+            }
+
         } else {
-            throw new Exception('Need AdWords user object or auth & settings files.');
+            $trace = debug_backtrace();
+            trigger_error(
+                'At least one must be sent: AdWordsUserExt user, Campaign campaign or auth and settings ini files '.
+                ' Exception at file ' . $trace[0]['file'] .
+                '[' . $trace[0]['line'].']',
+                E_USER_ERROR);
         }
 
-        // Create campaign.
-        $this->campaign = new Campaign();
+        if(!isset($this->campaign)&&isset($this->user)) {
+            $campaignService = $this->user->GetService('CampaignService');
+            $this->campaign = new Campaign();
+            $this->setDefaults();
+        }
 
-        $this->setDefaults();
+    }
+
+    function __get($name) {
+        if(method_exists($this->campaign, $name)) {
+            return $this->campaign->$name;
+        }
+
+        $trace = debug_backtrace();
+        trigger_error(
+            'Undefined method in __get(): ' . $name .
+            ' at file ' . $trace[0]['file'] .
+            '[' . $trace[0]['line'].']',
+            E_USER_ERROR);
+        return null;
+    }
+
+    function __set($name, $value) {
+
+        if(method_exists($this->campaign, $name)) {
+            $this->campaign->$name = $value;
+        }
+
+        $trace = debug_backtrace();
+        trigger_error(
+            'Undefined method in __set(): ' . $name .
+            ' at file ' . $trace[0]['file'] .
+            '[' . $trace[0]['line'].']',
+            E_USER_ERROR);
+    }
+
+    function __isset($name) {
+        return method_exists($this->campaign, $name) && isset($this->campaign->$name);
+    }
+
+    function __unset($name) {
+        unset($this->campaign->$name);
+    }
+
+    function __call($name, $arguments) {
+        if(method_exists($this->campaign, $name)) {
+            return call_user_func_array(array($this->campaign, $name), $arguments);
+        }
     }
 
     /**
@@ -57,6 +119,7 @@ class AdWordsCampaignExt {
         $this->campaign->adServingOptimizationStatus = 'ROTATE';
         $this->campaign->advertisingChannelType = 'SEARCH';
 
+        $this->campaign->budget = new Budget();
         $this->campaign->budget->name = 'New Campaign Budget #' . uniqid();
         $this->campaign->budget->period = 'DAILY';
         $this->setBudgetAmount(50000000);
@@ -64,13 +127,16 @@ class AdWordsCampaignExt {
 
         //@todo servingStatus и список в форме как R/O (https://developers.google.com/adwords/api/docs/reference/v201402/CampaignService.Campaign)
 
+        $this->campaign->biddingStrategyConfiguration = new BiddingStrategyConfiguration();
         $this->campaign->biddingStrategyConfiguration->biddingStrategyType = 'MANUAL_CPC';
-        $this->campaign->biddingStrategyConfiguration->biddingScheme->enhancedCpcEnabled = false;
+        $this->campaign->biddingStrategyConfiguration->biddingScheme = new BiddingScheme();
 
+        $this->campaign->networkSetting = new NetworkSetting();
         $this->campaign->networkSetting->targetGoogleSearch = true;
         $this->campaign->networkSetting->targetSearchNetwork = true;
         $this->campaign->networkSetting->targetContentNetwork = true;
 
+        $this->campaign->frequencyCap = new FrequencyCap();
         $this->campaign->frequencyCap->impressions = 5;
         $this->campaign->frequencyCap->timeUnit = 'DAY';
         $this->campaign->frequencyCap->level = 'ADGROUP';
