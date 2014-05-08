@@ -29,6 +29,8 @@ class AdWordsCampaignExt {
 
     public $user;
     public $campaign;
+    public $campaignService;
+    public $budgetService;
 
     public function __construct() {
 
@@ -56,8 +58,12 @@ class AdWordsCampaignExt {
                 E_USER_ERROR);
         }
 
-        if(!isset($this->campaign)&&isset($this->user)) {
-            $campaignService = $this->user->GetService('CampaignService');
+        if(isset($this->user)) {
+            $this->campaignService = $this->user->GetService('CampaignService');
+            $this->budgetService = $this->user->GetService('BudgetService');
+        }
+
+        if(!isset($this->campaign)&&isset($this->campaignService)) {
             $this->campaign = new Campaign();
             $this->setDefaults();
         }
@@ -65,13 +71,16 @@ class AdWordsCampaignExt {
     }
 
     function __get($name) {
-        if(property_exists($this->campaign, $name)) {
+
+        if($name == 'campaign') {
+            return $this;
+        } elseif(property_exists($this->campaign, $name)) {
             return $this->campaign->$name;
         }
 
         $trace = debug_backtrace();
         trigger_error(
-            'Undefined method in __get(): ' . $name .
+            'Undefined property in __get(): ' . $name .
             ' at file ' . $trace[0]['file'] .
             '[' . $trace[0]['line'].']',
             E_USER_ERROR);
@@ -80,13 +89,17 @@ class AdWordsCampaignExt {
 
     function __set($name, $value) {
 
-        if(method_exists($this->campaign, $name)) {
+        if($name == 'campaign') {
+            $this->campaign = $value;
+            return;
+        } elseif(property_exists($this->campaign, $name)) {
             $this->campaign->$name = $value;
+            return;
         }
 
         $trace = debug_backtrace();
         trigger_error(
-            'Undefined method in __set(): ' . $name .
+            'Undefined property in __set(): ' . $name .
             ' at file ' . $trace[0]['file'] .
             '[' . $trace[0]['line'].']',
             E_USER_ERROR);
@@ -157,17 +170,15 @@ class AdWordsCampaignExt {
     function budgetOperation($operator = 'ADD') {
 
         $operations = array();
-        $budgetService = $this->user->GetService('BudgetService');
 
         $operation = new BudgetOperation();
         $operation->operand = $this->campaign->budget;
         $operation->operator = $operator;
         $operations[] = $operation;
 
-        $result = $budgetService->mutate($operations);
+        $result = $this->budgetService->mutate($operations);
         $this->campaign->budget = $result->value[0];
 
-        unset($budgetService);
         unset($operation);
         unset($operations);
 
@@ -189,14 +200,60 @@ class AdWordsCampaignExt {
         $operations[] = $operation;
 
         // Make the mutate request.
-        $campaignService = $this->user->GetService('CampaignService');
-        $result = $campaignService->mutate($operations);
+        $result = $this->campaignService->mutate($operations);
 
-        unset($campaignService);
         unset($operation);
         unset($operations);
 
         return $result;
+    }
+
+    function getById($campaignId, $fields = array()) {
+
+        unset($this->campaign);
+
+        // Фильтр
+        $predicate = new Predicate('Id','EQUALS',$campaignId);
+        // Create selector.
+        $selector = new Selector();
+
+        if(empty($fields)) {
+            $fields = array(
+                'Id', 'Name', 'Status', 'ServingStatus', 'StartDate', 'EndDate',
+                //@todo разобраться как правильно грузить бюджет
+//            'Budget',
+                //@todo разобраться как правильно грузить ConversionOptimizerEligibility
+//            'ConversionOptimizerEligibility',
+                'AdServingOptimizationStatus',
+                //@todo разобраться как правильно грузить FrequencyCap
+//            'FrequencyCap',
+                'Settings',
+                'AdvertisingChannelType',
+                'TargetGoogleSearch', 'TargetSearchNetwork', 'TargetContentNetwork', 'TargetPartnerSearchNetwork',
+                //@todo разобраться как правильно грузить BiddingStrategyConfiguration
+//            'BiddingStrategyConfiguration',
+                //@todo разобраться как правильно грузить ForwardCompatibilityMap
+//            'ForwardCompatibilityMap',
+                'DisplaySelect',
+            );
+        }
+
+        $selector->fields = $fields;
+        $selector->predicates[] = $predicate;
+
+        $campaignsPage = $this->campaignService->get($selector);
+
+        if($campaignsPage->totalNumEntries == 1) {
+
+            $this->campaign = $campaignsPage->entries[0];
+
+            return $this->campaign;
+
+        } else {
+
+            return false;
+
+        }
     }
 }
  
