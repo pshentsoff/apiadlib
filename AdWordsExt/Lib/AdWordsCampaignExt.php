@@ -65,7 +65,7 @@ class AdWordsCampaignExt {
     }
 
     function __get($name) {
-        if(method_exists($this->campaign, $name)) {
+        if(property_exists($this->campaign, $name)) {
             return $this->campaign->$name;
         }
 
@@ -129,7 +129,7 @@ class AdWordsCampaignExt {
 
         $this->campaign->biddingStrategyConfiguration = new BiddingStrategyConfiguration();
         $this->campaign->biddingStrategyConfiguration->biddingStrategyType = 'MANUAL_CPC';
-        $this->campaign->biddingStrategyConfiguration->biddingScheme = new BiddingScheme();
+//        $this->campaign->biddingStrategyConfiguration->biddingScheme = new BiddingScheme();
 
         $this->campaign->networkSetting = new NetworkSetting();
         $this->campaign->networkSetting->targetGoogleSearch = true;
@@ -155,14 +155,15 @@ class AdWordsCampaignExt {
     }
 
     function budgetOperation($operator = 'ADD') {
+
         $operations = array();
+        $budgetService = $this->user->GetService('BudgetService');
 
         $operation = new BudgetOperation();
         $operation->operand = $this->campaign->budget;
         $operation->operator = $operator;
         $operations[] = $operation;
 
-        $budgetService = new BudgetService();
         $result = $budgetService->mutate($operations);
         $this->campaign->budget = $result->value[0];
 
@@ -188,7 +189,7 @@ class AdWordsCampaignExt {
         $operations[] = $operation;
 
         // Make the mutate request.
-        $campaignService = new CampaignService();
+        $campaignService = $this->user->GetService('CampaignService');
         $result = $campaignService->mutate($operations);
 
         unset($campaignService);
