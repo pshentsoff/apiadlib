@@ -26,19 +26,9 @@
 class AdWordsCampaignExt {
 
     public $user;
-    public $budgetService;
-    public $budget;
-    public $campaignService;
     public $campaign;
-    public $biddingStrategyConfiguration;
-    public $biddingScheme;
-    public $keywordMatchSetting;
-    public $networkSetting;
-    public $frequencyCap;
-    public $geoTargetTypeSetting;
-    public $dynamicSearchAdsSetting;
 
-    public function __construct($user = null, $auth_file = null, $settings_file = null) {
+    public function __construct(AdWordsUserExt $user = null, $auth_file = null, $settings_file = null) {
 
         if(isset($user)) {
             $this->user = $user;
@@ -48,49 +38,16 @@ class AdWordsCampaignExt {
             throw new Exception('Need AdWords user object or auth & settings files.');
         }
 
-        // Get the BudgetService, which loads the required classes.
-        $this->budgetService = $user->GetService('BudgetService', ADWORDS_VERSION);
-
-        // Create the shared budget (required).
-        $this->budget = new Budget();
-
-        // Get the CampaignService, which loads the required classes.
-        $this->campaignService = $user->GetService('CampaignService', ADWORDS_VERSION);
-
         // Create campaign.
         $this->campaign = new Campaign();
-
-        // Set bidding strategy (required).
-        $this->biddingStrategyConfiguration = new BiddingStrategyConfiguration();
-
-        // You can optionally provide a bidding scheme in place of the type.
-        $this->biddingScheme = new ManualCpcBiddingScheme();
-
-        // Set keyword matching setting (required).
-        $this->keywordMatchSetting = new KeywordMatchSetting();
-
-        // Set network targeting (recommended).
-        $this->networkSetting = new NetworkSetting();
-
-        // Set frequency cap (optional).
-        $this->frequencyCap = new FrequencyCap();
-
-        // Set advanced location targeting settings (optional).
-        $this->geoTargetTypeSetting = new GeoTargetTypeSetting();
-
-        //Setting for controlling Dynamic Search Ads (DSA).
-        //Contains the domain name and the language used by the DSA system to automatically generate landing pages and keywords for a campaign.
-        $this->dynamicSearchAdsSetting = new DynamicSearchAdsSetting();
 
         $this->setDefaults();
     }
 
+    /**
+     * Sets campaign defaults
+     */
     function setDefaults() {
-
-        $this->budget->name = 'New Campaign Budget #' . uniqid();
-        $this->budget->period = 'DAILY';
-        $this->setBudgetAmount(50000000);
-        $this->budget->deliveryMethod = 'STANDARD';
 
         $this->campaign->name = 'New Campaign #' . uniqid();
         // Set additional settings (optional).
@@ -100,74 +57,75 @@ class AdWordsCampaignExt {
         $this->campaign->adServingOptimizationStatus = 'ROTATE';
         $this->campaign->advertisingChannelType = 'SEARCH';
 
+        $this->campaign->budget->name = 'New Campaign Budget #' . uniqid();
+        $this->campaign->budget->period = 'DAILY';
+        $this->setBudgetAmount(50000000);
+        $this->campaign->budget->deliveryMethod = 'STANDARD';
+
         //@todo servingStatus и список в форме как R/O (https://developers.google.com/adwords/api/docs/reference/v201402/CampaignService.Campaign)
 
-        $this->biddingStrategyConfiguration->biddingStrategyType = 'MANUAL_CPC';
+        $this->campaign->biddingStrategyConfiguration->biddingStrategyType = 'MANUAL_CPC';
+        $this->campaign->biddingStrategyConfiguration->biddingScheme->enhancedCpcEnabled = false;
 
-        $this->biddingScheme->enhancedCpcEnabled = false;
+        $this->campaign->networkSetting->targetGoogleSearch = true;
+        $this->campaign->networkSetting->targetSearchNetwork = true;
+        $this->campaign->networkSetting->targetContentNetwork = true;
 
-        $this->keywordMatchSetting->optIn = true;
+        $this->campaign->frequencyCap->impressions = 5;
+        $this->campaign->frequencyCap->timeUnit = 'DAY';
+        $this->campaign->frequencyCap->level = 'ADGROUP';
 
-        $this->networkSetting->targetGoogleSearch = true;
-        $this->networkSetting->targetSearchNetwork = true;
-        $this->networkSetting->targetContentNetwork = true;
-
-        $this->frequencyCap->impressions = 5;
-        $this->frequencyCap->timeUnit = 'DAY';
-        $this->frequencyCap->level = 'ADGROUP';
-
-        $this->geoTargetTypeSetting->positiveGeoTargetType = 'DONT_CARE';
-        $this->geoTargetTypeSetting->negativeGeoTargetType = 'DONT_CARE';
-
-        $this->dynamicSearchAdsSetting->domainName = '-';
-        $this->dynamicSearchAdsSetting->languageCode = 'en';
+        $this->campaign->settings[] = new KeywordMatchSetting(true);
+        $this->campaign->settings[] = new GeoTargetTypeSetting('DONT_CARE', 'DONT_CARE');
+        //@todo Добавить в формы gaw-approve
+        $this->campaign->settings[] = new DynamicSearchAdsSetting('-', 'en');
     }
 
     function setBudgetAmount($budgetAmount) {
-        if(isset($this->budget->amount)) {
-            unset($this->budget->amount);
+        if(isset($this->campaign->budget->amount)) {
+            unset($this->campaign->budget->amount);
         }
-        $this->budget->amount = new Money($budgetAmount);
+        $this->campaign->budget->amount = new Money($budgetAmount);
     }
 
     function budgetOperation($operator = 'ADD') {
         $operations = array();
 
-        // Create operation.
         $operation = new BudgetOperation();
-        $operation->operand = $this->budget;
+        $operation->operand = $this->campaign->budget;
         $operation->operator = $operator;
         $operations[] = $operation;
 
-        // Make the mutate request.
-        $result = $this->budgetService->mutate($operations);
+        $budgetService = new BudgetService();
+        $result = $budgetService->mutate($operations);
         $this->campaign->budget = $result->value[0];
-//        $this->campaign->budget->budgetId = $this->budget->budgetId;
 
+        unset($budgetService);
         unset($operation);
         unset($operations);
 
         return $result;
     }
 
+    /**
+     * @param string $operator
+     * @return mixed
+     */
     function campaignOperation($operator = 'ADD') {
-        $operations = array();
-        $this->biddingStrategyConfiguration->biddingScheme = $this->biddingScheme;
-        $this->campaign->biddingStrategyConfiguration = $this->biddingStrategyConfiguration;
-        $this->campaign->settings[] = $this->keywordMatchSetting;
-        $this->campaign->networkSetting = $this->networkSetting;
-        $this->campaign->frequencyCap = $this->frequencyCap;
-        $this->campaign->settings[] = $this->geoTargetTypeSetting;
 
         // Create operation.
         $operation = new CampaignOperation();
         $operation->operand = $this->campaign;
         $operation->operator = $operator;
+
+        $operations = array();
         $operations[] = $operation;
 
         // Make the mutate request.
-        $result = $this->campaignService->mutate($operations);
+        $campaignService = new CampaignService();
+        $result = $campaignService->mutate($operations);
 
+        unset($campaignService);
         unset($operation);
         unset($operations);
 

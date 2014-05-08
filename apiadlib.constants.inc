@@ -15,6 +15,7 @@
   */
 
 defined('ADWORDS_VERSION') or define('ADWORDS_VERSION', 'v201402');
+//defined('ADWORDS_VERSION') or define('ADWORDS_VERSION', 'v201309');
 
 /**
  *  Local settings
