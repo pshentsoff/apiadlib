@@ -190,7 +190,10 @@ class AdWordsCampaignExt {
      * @return mixed
      */
     function campaignOperation($operator = 'ADD') {
+        return $this->operation($operator);
+    }
 
+    function operation($operator = 'ADD') {
         // Create operation.
         $operation = new CampaignOperation();
         $operation->operand = $this->campaign;

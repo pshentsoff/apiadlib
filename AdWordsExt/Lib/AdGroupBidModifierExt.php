@@ -1,7 +1,8 @@
 <?php
 /**
  * @file        AdGroupBidModifierExt.php
- * @description
+ * @description Represents an adgroup level bid modifier override for campaign level criterion bid modifier values.
+ * @see         https://developers.google.com/adwords/api/docs/reference/v201402/AdGroupBidModifierService.AdGroupBidModifier?hl=en type AdGroupBidModifier (v201402)
  *
  * PHP Version  5.3.13
  *
@@ -27,6 +28,7 @@ class AdGroupBidModifierExt extends AdGroupBidModifier {
     public $user;
     public $bidModifier;
     public $bidModifierService;
+    public $lastResponse;
 
     public function __construct() {
 
@@ -69,6 +71,7 @@ class AdGroupBidModifierExt extends AdGroupBidModifier {
         $this->bidModifier->criterion = new Platform();
         $this->bidModifier->criterion->id = APIADLIB_CRITERION_ID;
         $this->bidModifier->bidModifier = APIADLIB_BID_MODIFIER;
+        $this->lastResponse = false;
     }
 
     function __get($name) {
@@ -92,9 +95,11 @@ class AdGroupBidModifierExt extends AdGroupBidModifier {
 
         if($name == 'bidModifier') {
             $this->bidModifier = $value;
+            $this->lastResponse = false;
             return;
         } elseif(property_exists($this->bidModifier, $name)) {
             $this->bidModifier->$name = $value;
+            $this->lastResponse = false;
             return;
         }
 
@@ -120,5 +125,22 @@ class AdGroupBidModifierExt extends AdGroupBidModifier {
         }
     }
 
-    //@todo operation (@see C14)
+    function operation($operator = 'ADD') {
+
+        // Create operation.
+        $operation = new CampaignOperation();
+        $operation->operand = $this->bidModifier;
+        $operation->operator = $operator;
+
+        $operations = array();
+        $operations[] = $operation;
+
+        // Make the mutate request.
+        $this->lastResponse = $this->bidModifierService->mutate($operations);
+
+        unset($operation);
+        unset($operations);
+
+        return $this->lastResponse;
+    }
 }

@@ -3,4 +3,4 @@ description = "Library for Google AdWords and Yandex.Direct Ads systems API."
 package     = Advertisement Management System
 core        = 7.x
 php         = 5.3
-version     = "0.5.5-dev"
+version     = "0.5.6-dev"
