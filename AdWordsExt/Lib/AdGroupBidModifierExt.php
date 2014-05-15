@@ -71,6 +71,54 @@ class AdGroupBidModifierExt extends AdGroupBidModifier {
         $this->bidModifier->bidModifier = APIADLIB_BID_MODIFIER;
     }
 
-    //@todo setters
+    function __get($name) {
+
+        if($name == 'bidModifier') {
+            return $this;
+        } elseif(property_exists($this->bidModifier, $name)) {
+            return $this->bidModifier->$name;
+        }
+
+        $trace = debug_backtrace();
+        trigger_error(
+            'Undefined property in __get(): ' . $name .
+            ' at file ' . $trace[0]['file'] .
+            '[' . $trace[0]['line'].']',
+            E_USER_ERROR);
+        return null;
+    }
+
+    function __set($name, $value) {
+
+        if($name == 'bidModifier') {
+            $this->bidModifier = $value;
+            return;
+        } elseif(property_exists($this->bidModifier, $name)) {
+            $this->bidModifier->$name = $value;
+            return;
+        }
+
+        $trace = debug_backtrace();
+        trigger_error(
+            'Undefined property in __set(): ' . $name .
+            ' at file ' . $trace[0]['file'] .
+            '[' . $trace[0]['line'].']',
+            E_USER_ERROR);
+    }
+
+    function __isset($name) {
+        return method_exists($this->bidModifier, $name) && isset($this->bidModifier->$name);
+    }
+
+    function __unset($name) {
+        unset($this->bidModifier->$name);
+    }
+
+    function __call($name, $arguments) {
+        if(method_exists($this->bidModifier, $name)) {
+            return call_user_func_array(array($this->bidModifier, $name), $arguments);
+        }
+    }
+
     //@todo operation (@see C14)
 }
