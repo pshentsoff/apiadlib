@@ -1,6 +1,6 @@
 <?php
 /**
- * @file        AdGroupBidModifierExt.php
+ * @file        AdWordsAdGroupBidModifierExt.php
  * @description Represents an adgroup level bid modifier override for campaign level criterion bid modifier values.
  * @see         https://developers.google.com/adwords/api/docs/reference/v201402/AdGroupBidModifierService.AdGroupBidModifier?hl=en type AdGroupBidModifier (v201402)
  *
@@ -23,7 +23,7 @@ require_once dirname(__FILE__) . '/../../apiadlib.autoload.php';
 defined('APIADLIB_BID_MODIFIER') or define('APIADLIB_BID_MODIFIER', 1.5);
 defined('APIADLIB_CRITERION_ID') or define('APIADLIB_CRITERION_ID', 30001);
 
-class AdGroupBidModifierExt extends AdGroupBidModifier {
+class AdWordsAdGroupBidModifierExt extends AdGroupBidModifier {
 
     public $user;
     public $bidModifier;
