@@ -100,3 +100,34 @@ function advertisingChannelTypeList() {
         'SHOPPING' => 'shopping',
     );
 }
+
+function locationList() {
+    return array(
+        'CONTENT_LABEL' => 'Content label',
+        'KEYWORD' => 'Keyword',
+        'PLACEMENT' => "Placement",
+        'VERTICAL' => "Vertical",
+        'USER_LIST' => 'User lists',
+        'USER_INTEREST' => 'User interests',
+        'MOBILE_APPLICATION' => 'Mobile application',
+        'MOBILE_APP_CATEGORY' => 'Mobile application categories',
+        'PRODUCT' => 'Product target',
+        'PRODUCT_PARTITION' => 'Product partition',
+        'IP_BLOCK' => 'IP addresses to exclude',
+        'WEBPAGE' => "Webpages of an advertiser's website to target",
+        'LANGUAGE' => 'Languages to target',
+        'LOCATION' => 'Geographic regions to target',
+        'AGE_RANGE' => 'Age Range to exclude',
+        'CARRIER' => 'Mobile carriers to target',
+        'OPERATING_SYSTEM_VERSION' => 'Mobile operating system versions to target',
+        'MOBILE_DEVICE' => 'Mobile devices to target',
+        'GENDER' => 'Gender to exclude',
+        'PROXIMITY' => 'Proximity (area within a radius) to target',
+        'PLATFORM' => 'Platforms to target',
+        'AD_SCHEDULE' => 'AdSchedule or specific days and time intervals to target',
+        'LOCATION_GROUPS' => 'Targeting based on location groups',
+        'PRODUCT_SCOPE' => 'Scope of products',
+        'PRODUCT_SALES_CHANNEL' => "Targeting based on product's sales channel",
+        'UNKNOWN' => 'Used for return value',
+    );
+}
