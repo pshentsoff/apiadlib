@@ -29,6 +29,7 @@ class AdWordsAdGroupBidModifierExt extends AdWordsCommonExt {
     const WRAPPED_CLASS_NAME = 'AdGroupBidModifier';
 
     public function setDefaults() {
+        parent::setDefaults();
         $this->bidModifier->criterion = new Platform();
         $this->bidModifier->criterion->id = APIADLIB_CRITERION_ID;
         $this->bidModifier->bidModifier = APIADLIB_BID_MODIFIER;

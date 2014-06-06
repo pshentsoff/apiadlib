@@ -25,7 +25,7 @@ class AdWordsAdGroupAdExt extends AdWordsCommonExt {
     const WRAPPED_CLASS_NAME = 'AdGroupAd';
 
     public function setDefaults() {
-
+        parent::setDefaults();
     }
 
 }
