@@ -101,7 +101,7 @@ function advertisingChannelTypeList() {
     );
 }
 
-function locationList() {
+function criterionList() {
     return array(
         'CONTENT_LABEL' => 'Content label',
         'KEYWORD' => 'Keyword',
