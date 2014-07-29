@@ -21,7 +21,10 @@
 require_once dirname(__FILE__) . '/../../apiadlib.autoload.php';
 
 defined('APIADLIB_BID_MODIFIER') or define('APIADLIB_BID_MODIFIER', 1.5);
-defined('APIADLIB_CRITERION_ID') or define('APIADLIB_CRITERION_ID', 30001);
+defined('APIADLIB_CRITERION_HIGHENDMOBILE') or define('APIADLIB_CRITERION_HIGHENDMOBILE', 30001);
+//Note: Currently, only HighEndMobile criterion (ID=30001) bids can be adjusted at the ad group level.
+//@see  https://developers.google.com/adwords/api/docs/guides/adgroup-bid-modifiers
+defined('APIADLIB_CRITERION_ID') or define('APIADLIB_CRITERION_ID', APIADLIB_CRITERION_HIGHENDMOBILE);
 
 class AdWordsAdGroupBidModifierExt extends AdWordsCommonExt {
 
@@ -30,9 +33,9 @@ class AdWordsAdGroupBidModifierExt extends AdWordsCommonExt {
 
     public function setDefaults() {
         parent::setDefaults();
-        $this->bidModifier->criterion = new Platform();
-        $this->bidModifier->criterion->id = APIADLIB_CRITERION_ID;
-        $this->bidModifier->bidModifier = APIADLIB_BID_MODIFIER;
+        $this->object->criterion = new Platform();
+        $this->object->criterion->id = APIADLIB_CRITERION_ID;
+        $this->object->bidModifier = APIADLIB_BID_MODIFIER;
     }
 
 }
