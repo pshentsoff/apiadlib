@@ -26,20 +26,20 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 -   [Yandex.Direct API Help] (https://direct.yandex.ru/help/?id=1113180 "Yandex.Direct API Help")
 -   [AdWords API Forum] (https://groups.google.com/forum/#!forum/adwords-api "AdWords API Forum")
 
-#### Current version 0.7.0-dev
-#### Last work version 0.2.2-dev
-#### Last stable version 0.2.2-dev
+#### Current version 0.7.0
+#### Last work version 0.7.0
+#### Last stable version 0.7.0
 
 ### Version history:
 
-### version 0.7.0-dev
+### version 0.7.0
 -   Google AdWords (GAW) v201406 included
 
-### version 0.6.4-dev
+### version 0.6.4
 -   New zero-layer class as base for AdWords wrappers
 -   Campaign, AdGroup, AdGroupAd, AdGroupBidModifier class-wrappers
 
-### version 0.5.8-dev
+### version 0.5.8
 This version(s) is not compatible with 0.4.x versions.
 -   AdWordsCampaignExt fields and methods are rewrited.
 -   Other class wrappers
@@ -49,7 +49,7 @@ This version(s) is not compatible with 0.4.x versions.
 -   AdWordsCampaignExt
 -   AdWordsEnums.php functions
 
-#### version 0.3.16-dev
+#### version 0.3.16
 -   Google AdWords (GAW) v201309 included
 -   Google AdWords (GAW) v201306 included
 -   apiadlib.init.php - common library include file
@@ -61,7 +61,7 @@ This version(s) is not compatible with 0.4.x versions.
 -   AdWorks/APIAdLib/Issue #2 resolved
 -   check_oauth2_errors() function with print relevant message if exception occurs
 
-#### version 0.2.2-dev
+#### version 0.2.2
 -   YDirectUtils
 
 #### version 0.2.1-dev from 13.05.2012
