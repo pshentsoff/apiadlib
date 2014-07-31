@@ -34,6 +34,7 @@
 require_once dirname(__FILE__) . '/../../Common/Lib/AdsUser.php';
 require_once dirname(__FILE__) . '/../../Common/Util/ApiPropertiesUtils.php';
 require_once dirname(__FILE__) . '/../../Common/Util/AuthToken.php';
+require_once dirname(__FILE__) . '/../../Common/Util/DeprecationUtils.php';
 require_once dirname(__FILE__) . '/../Util/ReportUtils.php';
 require_once 'AdWordsSoapClientFactory.php';
 require_once 'AdWordsConstants.php';
@@ -46,8 +47,9 @@ require_once 'AdWordsConstants.php';
  */
 class AdWordsUser extends AdsUser {
 
-  const OAUTH2_SCOPE = 'https://adwords.google.com/api/adwords/';
+  const OAUTH2_SCOPE = 'https://www.googleapis.com/auth/adwords';
   const OAUTH2_HANDLER_CLASS = 'SimpleOAuth2Handler';
+  const FINAL_CLIENT_LOGIN_VERSION = "v201309";
 
   /**
    * The name of the SOAP header that represents the user agent making API
@@ -228,6 +230,7 @@ class AdWordsUser extends AdsUser {
    * @param bool $partialFailure if the service should be created in
    *     partialFailure mode
    * @return SoapClient the instantiated service
+   * @throws ServiceException if an error occurred when getting the service
    */
   public function GetService($serviceName, $version = NULL, $server = NULL,
       SoapClientFactory $serviceFactory = NULL, $validateOnly = NULL,
@@ -245,6 +248,9 @@ class AdWordsUser extends AdsUser {
       $serviceFactory = new AdWordsSoapClientFactory($this, $version, $server,
         $validateOnly, $partialFailure);
     }
+
+    DeprecationUtils::CheckUsingClientLoginWithUnsupportedVersion($this,
+        self::FINAL_CLIENT_LOGIN_VERSION, $version);
 
     return parent::GetServiceSoapClient($serviceName, $serviceFactory);
   }

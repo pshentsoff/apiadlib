@@ -2,7 +2,7 @@
 
 PHP Library layer for API Advertisement services of Yandex.Direct and Google AdWords
 
--   [Project's Blog (russian)](http://apiadlib.pshentsoff.ru "APIAdLib blog")
+-   [APIAdLib Project Blog (russian)](http://apiadlib.pshentsoff.ru "APIAdLib blog")
 -   Contributors: pshentsoff
 -   [Donate link](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGRFBSFEW5V3Y "Please, donate to support project")
 -   Tags: APIAdLib, AMS, Yandex.Direct, Google.AdWords
@@ -17,14 +17,23 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 
 ### Useful links:
 -   [Google AdWords API documentation](https://developers.google.com/adwords/api/ "Google AdWords API documentation")
+-   [Google AdWords API PHPDoc] (http://googleads.github.io/googleads-php-lib/AdWords/ "Google AdWords API PHPDoc")
 -   [Google AdWords account limits](https://support.google.com/adwords/answer/1704396 "Google AdWords account limits")
 -   [Google AdWords: Using OAuth 2.0](https://github.com/googleads/googleads-php-lib/wiki/Using-OAuth-2.0 "Using OAuth 2.0")
 
-#### Current version 0.6.4-dev
+### Support Pages:
+-   [APIAdLib Project Blog (russian)](http://apiadlib.pshentsoff.ru "APIAdLib blog")
+-   [Yandex.Direct API Help] (https://direct.yandex.ru/help/?id=1113180 "Yandex.Direct API Help")
+-   [AdWords API Forum] (https://groups.google.com/forum/#!forum/adwords-api "AdWords API Forum")
+
+#### Current version 0.7.0-dev
 #### Last work version 0.2.2-dev
 #### Last stable version 0.2.2-dev
 
 ### Version history:
+
+### version 0.7.0-dev
+-   Google AdWords (GAW) v201406 included
 
 ### version 0.6.4-dev
 -   New zero-layer class as base for AdWords wrappers

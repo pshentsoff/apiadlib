@@ -29,6 +29,7 @@
  */
 require_once dirname(__FILE__) . '/../Lib/AdWordsUser.php';
 require_once dirname(__FILE__) . '/../../Common/Util/CurlUtils.php';
+require_once dirname(__FILE__) . '/../../Common/Util/DeprecationUtils.php';
 require_once dirname(__FILE__) . '/../../Common/Util/Logger.php';
 require_once dirname(__FILE__) . '/../../Common/Util/XmlUtils.php';
 
@@ -40,6 +41,7 @@ require_once dirname(__FILE__) . '/../../Common/Util/XmlUtils.php';
 class ReportUtils {
 
   const CLIENT_LOGIN_FORMAT = 'GoogleLogin auth=%s';
+  const FINAL_RETURN_MONEY_IN_MICROS_VERSION = "v201402";
 
   /**
    * The log name to use when logging requests.
@@ -312,6 +314,8 @@ class ReportUtils {
       $user->SetOAuth2Info($oAuth2Info);
       $authHeader = $oAuth2Handler->FormatCredentialsForHeader($oAuth2Info);
     } else {
+      DeprecationUtils::CheckUsingClientLoginWithUnsupportedVersion($user,
+        AdWordsUser::FINAL_CLIENT_LOGIN_VERSION, $version);
       $authHeader = sprintf(self::CLIENT_LOGIN_FORMAT, $user->GetAuthToken());
     }
     $headers['Authorization'] = $authHeader;
@@ -333,6 +337,8 @@ class ReportUtils {
     }
     // Flags.
     if (isset($options['returnMoneyInMicros'])) {
+      DeprecationUtils::CheckUsingReturnMoneyInMicrosWithUnsupportedVersion(
+          self::FINAL_RETURN_MONEY_IN_MICROS_VERSION, $version);
       $headers['returnMoneyInMicros'] =
           $options['returnMoneyInMicros'] ? 'true' : 'false';
     }

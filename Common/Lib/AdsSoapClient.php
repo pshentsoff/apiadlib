@@ -178,8 +178,7 @@ abstract class AdsSoapClient extends SoapClient {
    * @param string $version the SOAP version
    * @return string the XML SOAP response
    */
-  function __doRequest($request , $location , $action , $version,
-      $one_way = 0) {
+  function __doRequest($request, $location, $action, $version, $one_way = 0) {
     $this->lastRequest = $this->PrepareRequest($request, $this->lastArguments,
         $this->lastHeaders);
 
@@ -207,11 +206,28 @@ abstract class AdsSoapClient extends SoapClient {
    */
   function __soapCall($function_name, $arguments, $options = NULL,
       $input_headers = NULL, &$output_headers = NULL) {
-    DeprecationUtils::CheckAdsUserUsingOAuth2($this->user);
+    DeprecationUtils::CheckUsingClientLogin($this->user);
     try {
       $input_headers[] = $this->GenerateSoapHeader();
       $this->lastHeaders = $input_headers;
       $this->lastArguments = $arguments;
+
+      $httpHeaders = $this->GenerateHttpHeaders();
+      if (!empty($httpHeaders)) {
+        // The context this soap client was originally created with. This is the
+        // only way to modify the HTTP headers per soap call.
+        $existingStreamContext = $this->options['stream_context'];
+        $existingStreamContextOptions =
+            stream_context_get_options($existingStreamContext);
+        // Override the existing HTTP headers each time since they may have
+        // changed.
+        $existingStreamContextOptions['http']['header'] = implode("\r\n",
+            array_map('AdsSoapClient::implodeHttpHeaders', array_keys($httpHeaders),
+                $httpHeaders));
+        stream_context_set_option($existingStreamContext,
+          $existingStreamContextOptions);
+      }
+
       $response = parent::__soapCall($function_name, $arguments, $options,
           $input_headers, $output_headers);
       $this->ProcessResponse($this->lastRequest,
@@ -222,6 +238,10 @@ abstract class AdsSoapClient extends SoapClient {
           $this->__getLastResponse(), $function_name, $e);
       throw $e;
     }
+  }
+
+  private static function implodeHttpHeaders($headerName, $headerValue) {
+    return sprintf("%s: %s", $headerName, $headerValue);
   }
 
   /**
@@ -405,7 +425,7 @@ abstract class AdsSoapClient extends SoapClient {
    */
   protected function PrepareRequest($request, array $arguments,
       array $headers) {
-    $addXsiTypes = FALSE;
+    $addXsiTypes = $this->user->GetForceAddXsiTypes();
     $removeEmptyElements = FALSE;
     $replaceReferences = FALSE;
 
@@ -413,9 +433,17 @@ abstract class AdsSoapClient extends SoapClient {
       trigger_error('The minimum required version of this client library'
           . ' is 5.2.0.', E_USER_ERROR);
     }
-    if (version_compare(PHP_VERSION, '5.2.6', '<') ||
-        (PHP_OS == 'Darwin' && version_compare(PHP_VERSION, '5.3.0', '<'))) {
-      $addXsiTypes = TRUE;
+
+    // If FORCE_ADD_XSI_TYPES was unset, then set it based on PHP version
+    if ($addXsiTypes === null) {
+      if (version_compare(PHP_VERSION, '5.2.6', '<') ||
+         (PHP_OS == 'Darwin' && version_compare(PHP_VERSION, '5.3.0', '<'))) {
+        $addXsiTypes = TRUE;
+      } else {
+        // If FORCE_ADD_XSI_TYPES was not set, and we didn't find an applicable
+        // version, then set it to FALSE by default.
+        $addXsiTypes = FALSE;
+      }
     }
 
     $removeEmptyElements = version_compare(PHP_VERSION, '5.2.3', '<');
@@ -468,6 +496,29 @@ abstract class AdsSoapClient extends SoapClient {
    * @access protected
    */
   protected abstract function GenerateSoapHeader();
+
+  /**
+   * Generates the HTTP headers for the client. By default includes OAuth2
+   * credentials if using OAuth2. Clients should override with product specific
+   * HTTP headers.
+   * @return array the HTTP headers as an array
+   * @access protected
+   */
+  protected function GenerateHttpHeaders() {
+    $httpHeaders = array();
+    $oAuth2Info = $this->user->GetOAuth2Info();
+    $oAuth2Handler = $this->user->GetOAuth2Handler();
+    if (!empty($oAuth2Info)) {
+      $oAuth2Info = $oAuth2Handler->GetOrRefreshAccessToken($oAuth2Info);
+      $this->user->SetOAuth2Info($oAuth2Info);
+      if ($oAuth2Handler->IsAccessTokenValid($oAuth2Info)) {
+        $httpHeaders['Authorization'] =
+            $oAuth2Handler->FormatCredentialsForHeader($oAuth2Info);
+      }
+    }
+
+    return $httpHeaders;
+  }
 
   /**
    * Removes any sensitive information from the request XML. This method is

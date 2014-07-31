@@ -28,8 +28,8 @@
  * @author     Eric Koleda
  * @author     Vincent Tsao
  */
-require_once dirname(__FILE__) .'/../Util/Logger.php';
-require_once dirname(__FILE__) .'/../Util/SimpleOAuth2Handler.php';
+require_once dirname(__FILE__).'/../Util/Logger.php';
+require_once dirname(__FILE__).'/../Util/SimpleOAuth2Handler.php';
 require_once 'SoapClientFactory.php';
 require_once 'ValidationException.php';
 
@@ -50,6 +50,8 @@ abstract class AdsUser {
   private $soapCompression;
   private $soapCompressionLevel;
   private $wsdlCache;
+  private $forceHttpVersion;
+  private $forceAddXsiTypes;
   private $authServer;
   private $oauth2Info;
   private $oauth2Handler;
@@ -230,6 +232,15 @@ abstract class AdsUser {
     if ($this->wsdlCache < 0 || $this->wsdlCache > 3) {
       $this->wsdlCache = WSDL_CACHE_NONE;
     }
+    $forceHttpVersion = $this->GetSetting($settingsIni, 'SOAP',
+        'FORCE_HTTP_VERSION');
+    $this->forceHttpVersion = $forceHttpVersion === null ? null :
+        (float) $forceHttpVersion;
+    $forceAddXsiTypes = $this->GetSetting($settingsIni, 'SOAP',
+        'FORCE_ADD_XSI_TYPES');
+    $this->forceAddXsiTypes = $forceAddXsiTypes === null ? null :
+        (bool) $forceAddXsiTypes;
+
 
     // Proxy settings.
     $proxyHost = $this->GetSetting($settingsIni, 'PROXY', 'HOST');
@@ -369,6 +380,22 @@ abstract class AdsUser {
    */
   public function GetWsdlCacheType() {
     return $this->wsdlCache;
+  }
+
+  /**
+   * Gets the version of the HTTP protocol to use regardless of PHP version.
+   * @return float the HTTP version that should be used
+   */
+  public function GetForceHttpVersion() {
+    return $this->forceHttpVersion;
+  }
+
+  /**
+   * Gets the setting of whether or not to add XSI types in the SOAP payload.
+   * @return bool whether or not to add XSI types in the SOAP payload
+   */
+  public function GetForceAddXsiTypes() {
+    return $this->forceAddXsiTypes;
   }
 
   /**

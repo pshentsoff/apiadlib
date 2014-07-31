@@ -37,6 +37,13 @@ require_once 'AdsUser.php';
  */
 abstract class SoapClientFactory {
 
+  /**
+   * The minimum PHP version that can properly decode HTTP 1.1 chunked
+   * responses. We use 5.4.0 because some versions of 5.3.x work and some do
+   * not.
+   */
+  const MIN_VER_CHUNKED_HTTP11 = '5.4.0';
+
   private $user;
   private $version;
   private $server;
@@ -115,6 +122,16 @@ abstract class SoapClientFactory {
 
     // WSDL caching settings.
     $options['cache_wsdl'] = $this->GetAdsUser()->GetWsdlCacheType();
+
+    // Check to see if the default version of the HTTP protocol to use should be
+    // overriden depending on the user's environment.
+    if ($this->GetAdsUser()->GetForceHttpVersion() !== null) {
+      $contextOptions['http']['protocol_version'] =
+          $this->GetAdsUser()->GetForceHttpVersion();
+    } else if (version_compare(PHP_VERSION, self::MIN_VER_CHUNKED_HTTP11) <
+        '<') {
+      $contextOptions['http']['protocol_version'] = 1.0;
+    }
 
     // Proxy settings.
     if (defined('HTTP_PROXY_HOST') && HTTP_PROXY_HOST != '') {
