@@ -10,8 +10,10 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 -   [Author's homepage](http://pshentsoff.ru "Author's homepage")
 -   License: Apache License, Version 2.0
 -   License URI: http://www.apache.org/licenses/LICENSE-2.0.html
--   Issues tracker of AdWorks Team projects: [AdWorks/APIAdLib Issue Tracker](https://bitbucket.org/adworks/apiadlib/issues "AdWorks/APIAdLib Issue Tracker")
--   [AdWorks/APIAdLib git repo](https://bitbucket.org/adworks/apiadlib "AdWorks/APIAdLib git repo")
+-   [APIAdLibTeam/APIAdLib PUBLIC git repo](https://github.com/APIAdLibTeam/apiadlib "Public APIAdLib/APIAdLib git repo")
+-   Issues tracker of APIAdLib Team projects: [APIAdLibTeam/APIAdLib Public Issue Tracker](https://github.com/APIAdLibTeam/apiadlib/issues "APIAdLibTeam/APIAdLib Issue Tracker")
+-   [AdWorks/APIAdLib PRIVATE git repo](https://bitbucket.org/adworks/apiadlib "AdWorks/APIAdLib git repo")
+-   Issues tracker of AdWorks Team projects: [AdWorks/APIAdLib Private Issue Tracker](https://bitbucket.org/adworks/apiadlib/issues "AdWorks/APIAdLib Issue Tracker")
 
 ### Useful links:
 -   [Google AdWords API documentation](https://developers.google.com/adwords/api/ "Google AdWords API documentation")
