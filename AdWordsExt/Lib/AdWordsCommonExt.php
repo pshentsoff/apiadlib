@@ -89,11 +89,22 @@ class AdWordsCommonExt {
 
     function __set($name, $value) {
 
+        //@debug remove
+        $args = func_get_args();
+
         if(mb_strtolower($name) === mb_strtolower(static::WRAPPED_CLASS_NAME)) {
+            //@debug remove
+            $args[] = 'Wrapped class';
+//            print_pre('Class ['.get_class().'] setter call',$args);
+
             $this->object = $value;
             $this->lastResponse = false;
             return;
         } elseif(property_exists($this->object, $name)) {
+            //@debug remove
+            $args[] = 'Property of wrapped class';
+//            print_pre('Class ['.get_class().'] setter call',$args);
+
             $this->object->$name = $value;
             $this->lastResponse = false;
             return;
