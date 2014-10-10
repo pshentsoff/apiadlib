@@ -63,6 +63,25 @@ class YDirectUser extends AdsUser {
    */
   protected static $DEFAULT_LOCALE = 'ru';
 
+  const OAUTH2_SCOPE = 'https://oauth.yandex.ru/authorize';
+  const OAUTH2_HANDLER_CLASS = 'SimpleOAuth2Handler';
+
+  /**
+   * The name of the SOAP header that represents the user agent making API
+   * calls.
+   * @var string
+   */
+  const USER_AGENT_HEADER_NAME = 'userAgent';
+
+  protected $libVersion;
+  protected $libName;
+
+  protected $defaultVersion;
+  protected $defaultServer;
+
+  protected $password;
+  protected $userAgent;
+
   protected $login;
   protected $email;
   
@@ -113,6 +132,11 @@ class YDirectUser extends AdsUser {
       ) {
       
     parent::__construct();
+
+    $this->libVersion = YDirectUser::$LIB_VERSION;
+    $this->libName = YDirectUser::$LIB_NAME;
+    $this->defaultVersion = YDirectUser::$DEFAULT_VERSION;
+    $this->defaultServer = YDirectUser::$DEFAULT_SERVER;
     
     if (isset($authenticationIniPath)) {
       $authenticationIni = parse_ini_file(realpath($authenticationIniPath), TRUE);
@@ -133,20 +157,22 @@ class YDirectUser extends AdsUser {
       $settingsIniPath = dirname(__FILE__) . '/../settings.ini';
     }
 
-    $this->LoadSettings($settingsIniPath,
-        YDirectUser::$DEFAULT_VERSION,
-        YDirectUser::$DEFAULT_SERVER,
-        dirname(__FILE__), dirname(__FILE__));
+    $this->LoadSettings(
+      $settingsIniPath,
+      $this->defaultVersion,
+      $this->defaultServer,
+      dirname(__FILE__),
+      dirname(__FILE__));
   }
-  
+
   public function GetClientLibraryIdentifier() {
     return NULL;
-    }
+  }
 
-   protected function GetOAuthScope($server = NULL) {
-    return NULL;
-    }
-    
+  protected function GetOAuthScope($server = NULL) {
+    return YDirectUser::OAUTH2_SCOPE;
+  }
+
   /**
    * Overrides {@link AdsUser::LoadSettings()}  
    * added settings - locale
@@ -225,31 +251,23 @@ class YDirectUser extends AdsUser {
    * @throws ValidationException if there are any validation errors
    */
   public function ValidateUser() {
-    if ($this->GetOAuthInfo() != NULL) {
-      $this->ValidateOAuthInfo();
+    if ($this->GetOAuth2Info() != NULL) {
+      $this->ValidateOAuth2Info();
     }
   }
 
   /**
-   * Validates that the OAuth info is complete.
-   * @throws ValidationException if there are any validation errors
-   * @access protected
+   * @see AdsUser::GetUserAgentHeaderName()
    */
-  protected function ValidateOAuthInfo() {
-    $oauthInfo = $this->GetOAuthInfo();
-    if (!array_key_exists('login', $oauthInfo)) {
-      throw new ValidationException('oauthInfo', NULL,
-          'login is required and cannot be NULL.');
-    }
-    if (!array_key_exists('token', $oauthInfo)) {
-      throw new ValidationException('oauthInfo', NULL,
-          'token is required and cannot be NULL.');
-    }
-    if (!array_key_exists('application_id', $oauthInfo)) {
-      throw new ValidationException('oauthInfo', NULL,
-          'application_id is required and cannot be NULL.');
-    }
-    
+  public function GetUserAgentHeaderName() {
+    return self::USER_AGENT_HEADER_NAME;
+  }
+
+  /**
+   * @see AdsUser::GetClientLibraryNameAndVersion()
+   */
+  public function GetClientLibraryNameAndVersion() {
+    return array($this->libName, $this->libVersion);
   }
 
   /**
@@ -333,6 +351,17 @@ class YDirectUser extends AdsUser {
     $serviceFactory = new YDirectSoapClientFactory($this, $version, NULL, NULL, NULL);
     $serviceFactory->DoRequireOnce($serviceName);
   }
+
+  /**
+   * Get the default OAuth2 Handler for this user.
+   * @param NULL|string $className the name of the oauth2Handler class or NULL
+   * @return mixed the configured OAuth2Handler class
+   */
+  public function GetDefaultOAuth2Handler($className = NULL) {
+    $className = !empty($className) ? $className : self::OAUTH2_HANDLER_CLASS;
+    return new $className($this->GetAuthServer(), self::OAUTH2_SCOPE);
+  }
+
   /**
    * Handles calls to undefined methods.
    * @param string $name the name of the method being called
@@ -346,6 +375,3 @@ class YDirectUser extends AdsUser {
   }
 
 }
-  
-?>
-                         
