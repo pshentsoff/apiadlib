@@ -32,6 +32,10 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 
 ### Version history:
 
+### version 0.7.1
+-   Yandex Direct OAuth 2.0
+-   Yandex Direct some updates
+
 ### version 0.7.0
 -   Google AdWords (GAW) v201406 included
 
