@@ -27,8 +27,8 @@ PHP Library layer for API Advertisement services of Yandex.Direct and Google AdW
 -   [AdWords API Forum] (https://groups.google.com/forum/#!forum/adwords-api "AdWords API Forum")
 
 #### Current version 0.7.1
-#### Last work version 0.7.0 (for Google AdWords)
-#### Last stable version 0.7.0 (for Google AdWords)
+#### Last work version 0.7.1
+#### Last stable version 0.7.1
 
 ### Version history:
 
