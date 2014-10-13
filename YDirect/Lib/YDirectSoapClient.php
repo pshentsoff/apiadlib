@@ -62,7 +62,7 @@ class YDirectSoapClient extends AdsSoapClient {
         $this->SetHeaderValue($key, $value);
         }   
         
-     $oAuthInfo = $user->GetOAuthInfo();
+     $oAuthInfo = $user->GetOAuth2Info();
      if($oAuthInfo) {
       foreach($oAuthInfo as $key => $value) {
         $this->SetHeaderValue($key, $value);
