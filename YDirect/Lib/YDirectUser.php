@@ -169,6 +169,19 @@ class YDirectUser extends AdsUser {
     return NULL;
   }
 
+  /**
+   * Define a constant if it isn't already defined. If it is defined but the
+   * value is different then attempt to redefine it, which will fail and throw
+   * the appropriate error.
+   * @param string $name the name of the constant
+   * @param string $value the value of the constant
+   */
+  protected function Define($name, $value) {
+    if (!defined($name) || (constant($name) != $value)) {
+      define($name, $value);
+    }
+  }
+
   protected function GetOAuthScope($server = NULL) {
     return YDirectUser::OAUTH2_SCOPE;
   }
