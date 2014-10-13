@@ -145,7 +145,7 @@ class YDirectUserExt extends YDirectUser {
       }
     
     if(array_key_exists('oauth', $auth)) {
-      $this->SetOAuthInfo((array)$auth['oauth']);
+      $this->SetOAuth2Info((array)$auth['oauth']);
       }
 
     return $result;
@@ -314,16 +314,16 @@ class YDirectUserExt extends YDirectUser {
         }
       }
       
-    // Logging settings.
-    if ($settings['logging']['path_relative'] == 1) {
-      $path = realpath($this->_logsRelativePathBase . '/'
-          . $settings['logging']['lib_log_dir_path']);
-      $this->logsDirectory = ($path === FALSE) ? $this->_defaultLogsDir : $path;
-      } else {
-      $this->logsDirectory = $settings['logging']['lib_log_dir_path'];
-      }
-    //TODO ~ 03.04.2012 14:20:47 check this
-    $this->InitLogs();
+//    // Logging settings.
+//    if ($settings['logging']['path_relative'] == 1) {
+//      $path = realpath($this->_logsRelativePathBase . '/'
+//          . $settings['logging']['lib_log_dir_path']);
+//      $this->logsDirectory = ($path === FALSE) ? $this->_defaultLogsDir : $path;
+//      } else {
+//      $this->logsDirectory = $settings['logging']['lib_log_dir_path'];
+//      }
+//    //TODO ~ 03.04.2012 14:20:47 check this
+//    $this->InitLogs();
 
     // Server settings.
     if (array_key_exists('server', $settings)) {

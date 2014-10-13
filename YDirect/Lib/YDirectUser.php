@@ -151,7 +151,7 @@ class YDirectUser extends AdsUser {
 
     $this->SetLogin($login);
     $this->SetEmail($email);
-    $this->SetOAuthInfo($oauthInfo);
+    $this->SetOAuth2Info($oauthInfo);
 
     if (!isset($settingsIniPath)) {
       $settingsIniPath = dirname(__FILE__) . '/../settings.ini';
