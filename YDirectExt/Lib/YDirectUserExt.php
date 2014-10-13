@@ -55,6 +55,7 @@ class YDirectUserExt extends YDirectUser {
   protected $soapCompressionLevel;
   protected $wsdlCache;
   protected $oauthHandler;
+  protected $authServer;
        
  /**
    * Class constructor
